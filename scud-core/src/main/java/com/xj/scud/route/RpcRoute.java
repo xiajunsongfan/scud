@@ -2,15 +2,18 @@ package com.xj.scud.route;
 
 import io.netty.channel.Channel;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Author: baichuan - xiajun
  * Date: 2017/01/09 10:44
  */
 public abstract class RpcRoute {
-    protected Map<String, Channel> serverNodes = new HashMap<>(8);//存放所有服务节点，创建对象时从这里提取
-    protected List<Channel> nodes = new ArrayList<>(8);//存放所有节点数据
+    protected Map<String, Channel> serverNodes = new ConcurrentHashMap<>(8);//存放所有服务节点，创建对象时从这里提取
+    protected List<Channel> nodes = new CopyOnWriteArrayList<>();//存放所有节点数据
 
     /**
      * 添加一个服务节点

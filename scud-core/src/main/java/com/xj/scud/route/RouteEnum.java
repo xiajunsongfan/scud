@@ -27,7 +27,7 @@ public enum RouteEnum {
         if ("random".equals(routeEnum)) {
             route = new RandomRoute();
         } else if ("weight".equals(routeEnum)) {
-            route = null;
+            route = new WeightRoute();
         } else if ("rotation".equals(routeEnum)) {
             route = new RotationRoute();
         }

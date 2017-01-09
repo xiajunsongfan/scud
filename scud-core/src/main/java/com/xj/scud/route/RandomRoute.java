@@ -14,15 +14,10 @@ public class RandomRoute extends RotationRoute {
     @Override
     public Channel getServer() {
         int r = random.nextInt(1000000);
-        lock.readLock().lock();
-        try {
-            if (serverNodes.isEmpty()) {
-                return null;
-            }
-            int index = r % serverNodes.size();
-            return nodes.get(index);
-        } finally {
-            lock.readLock().unlock();
+        if (serverNodes.isEmpty()) {
+            return null;
         }
+        int index = r % serverNodes.size();
+        return nodes.get(index);
     }
 }

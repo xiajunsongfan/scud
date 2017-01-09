@@ -2,6 +2,7 @@ package com.xj.scud.route;
 
 import io.netty.channel.Channel;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -12,33 +13,23 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class RotationRoute extends RpcRoute {
     private AtomicInteger index = new AtomicInteger(0);
-    protected ReadWriteLock lock = new ReentrantReadWriteLock();
+
 
     @Override
     public boolean addServerNode(NodeInfo node, Channel channel) {
         String key = node.getPath();
-        lock.writeLock().lock();
-        try {
-            serverNodes.put(key, channel);
-            nodes.add(channel);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        serverNodes.put(key, channel);
+        nodes.add(channel);
         return true;
     }
 
     @Override
     public boolean removeServerNode(String key) {
         boolean res = false;
-        lock.writeLock().lock();
-        try {
-            Channel channel;
-            if ((channel = serverNodes.remove(key)) != null) {
-                nodes.remove(channel);
-                res = true;
-            }
-        } finally {
-            lock.writeLock().unlock();
+        Channel channel;
+        if ((channel = serverNodes.remove(key)) != null) {
+            nodes.remove(channel);
+            res = true;
         }
         return res;
     }
@@ -46,25 +37,15 @@ public class RotationRoute extends RpcRoute {
     @Override
     public Channel getServer() {
         int i = Math.abs(index.incrementAndGet());
-        lock.readLock().lock();
-        try {
-            if (serverNodes.isEmpty()) {
-                return null;
-            }
-            int key = i % serverNodes.size();
-            return nodes.get(key);
-        } finally {
-            lock.readLock().unlock();
+        if (serverNodes.isEmpty()) {
+            return null;
         }
+        int key = i % serverNodes.size();
+        return nodes.get(key);
     }
 
     @Override
     public int size() {
-        lock.readLock().lock();
-        try {
-            return serverNodes.size();
-        } finally {
-            lock.readLock().unlock();
-        }
+        return serverNodes.size();
     }
 }
