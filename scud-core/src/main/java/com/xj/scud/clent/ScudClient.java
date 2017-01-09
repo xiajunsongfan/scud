@@ -23,6 +23,7 @@ public class ScudClient<T> {
                 if (manager == null) {
                     this.processer = new ProtocolProcesser(this.conf);
                     this.manager = new ClientManager(processer, this.conf);
+                    this.manager.initCluster();
                 }
             }
         }
@@ -49,6 +50,7 @@ public class ScudClient<T> {
     /**
      * 异步客户端
      * 暂未实现
+     *
      * @return
      */
     public T getAsyncClient() {

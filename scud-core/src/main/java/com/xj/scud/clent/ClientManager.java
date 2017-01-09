@@ -4,9 +4,13 @@ import com.xj.scud.core.NetworkProtocol;
 import com.xj.scud.core.ProtocolProcesser;
 import com.xj.scud.core.RpcResult;
 import com.xj.scud.network.netty.NettyClient;
+import com.xj.scud.route.NodeInfo;
+import com.xj.scud.route.RpcRoute;
 import io.netty.channel.Channel;
 
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -19,23 +23,40 @@ public class ClientManager<T> {
     private ProtocolProcesser processer;
     private ClientConfig config;
     private Invoker<RpcResult> invoker;
-    private volatile boolean init = false;
-    private Channel ch;
+    private NettyClient nettyClient;
+    private RpcRoute route;
 
     public ClientManager(ProtocolProcesser processer, ClientConfig config) {
         this.processer = processer;
         this.config = config;
-        this.initChannel();
         invoker = new ClientInvoker(config);
+        nettyClient = new NettyClient(config);
+        route = config.getRoute().getRoute();
     }
 
     /**
      * 初始化netty
      */
-    public synchronized void initChannel() {
-        if (!init) {
-            this.ch = NettyClient.start(this.config);
-            init = true;
+    public Channel initChannel(String ip, int port) {
+        return nettyClient.connect(ip, port);
+    }
+
+    /**
+     * 初始化所有客户端连接
+     */
+    public void initCluster() {
+        String hostStr = this.config.getHost();
+        if (hostStr != null) {
+            String[] hosts = hostStr.split(";");
+            for (String host : hosts) {
+                String[] ipPort = host.trim().split(":");
+                String ip = ipPort[0];
+                int port = Integer.parseInt(ipPort[1]);
+                Channel ch = this.initChannel(ip, port);
+                NodeInfo nodeInfo = new NodeInfo(ip, port);
+                route.addServerNode(nodeInfo, ch);
+
+            }
         }
     }
 
@@ -46,7 +67,7 @@ public class ClientManager<T> {
      * @throws InterruptedException e
      */
     public Channel getChannel() throws InterruptedException {
-        return this.ch;
+        return this.route.getServer();
     }
 
     /**
@@ -60,7 +81,7 @@ public class ClientManager<T> {
     public T invoke(Method method, Object[] args) throws Exception {
         int seq = seqCount.incrementAndGet();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
-        RpcResult result = this.invoker.invoke(this.ch, protocol);
+        RpcResult result = this.invoker.invoke(this.getChannel(), protocol);
         Throwable exception = result.getException();
         if (exception != null) {
             throw new Exception(exception);

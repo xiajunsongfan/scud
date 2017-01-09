@@ -11,6 +11,7 @@ public class ServerConfig<T> {
     private int nettyWorkPooleSize = 2;//netty work线程数
     private Class serviceClass;//服务接口class
     private T service;//服务实现类对象
+    private int connentTimeout;//连接超时时间 毫秒
 
     public String getIp() {
         return ip;
@@ -63,6 +64,15 @@ public class ServerConfig<T> {
 
     public ServerConfig setNettyWorkPooleSize(int nettyWorkPooleSize) {
         this.nettyWorkPooleSize = nettyWorkPooleSize;
+        return this;
+    }
+
+    public int getConnentTimeout() {
+        return connentTimeout;
+    }
+
+    public ServerConfig setConnentTimeout(int connentTimeout) {
+        this.connentTimeout = connentTimeout;
         return this;
     }
 }

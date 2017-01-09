@@ -34,4 +34,12 @@ public class MessageManager {
             future.responseReceived(result);
         }
     }
+
+    /**
+     * 删除队列
+     * @param seq 包序号
+     */
+    public static void remove(int seq){
+        msgManager.remove(seq);
+    }
 }

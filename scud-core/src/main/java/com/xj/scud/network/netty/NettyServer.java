@@ -3,6 +3,7 @@ package com.xj.scud.network.netty;
 import com.xj.scud.server.ServerConfig;
 import com.xj.scud.server.ServerManager;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -25,9 +26,10 @@ public class NettyServer {
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(bossGroup, workerGroup)
                 .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnentTimeout())
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(64, 1024, 65536));
+                .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(64, 1024, 65536))
+                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         boot.childHandler(new NettyServerInitializer(manager));
         boot.channel(NioServerSocketChannel.class);
         future = boot.bind(config.getPort()).syncUninterruptibly();

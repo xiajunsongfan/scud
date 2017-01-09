@@ -4,6 +4,7 @@ import com.xj.scud.core.NetworkProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
             throw t;
         } finally {
             if (frame != null) {
-                frame.release();
+                ReferenceCountUtil.release(frame);
             }
         }
         return null;

@@ -1,27 +1,28 @@
 package com.xj.scud.clent;
 
 import com.xj.scud.network.SerializableEnum;
+import com.xj.scud.route.RouteEnum;
 
 /**
  * Author: baichuan - xiajun
  * Date: 2017/01/03 18:10
  */
 public class ClientConfig<T> {
-    private String ip;
-    private int port;
+    private String host;
     private int connectTimeout;
     private int timeout;
     private Class<T> serverClass;//服务接口类
     private SerializableEnum type = SerializableEnum.KRYO;
     private int workThreadSize;
+    private int nettyBossThreadSize = 1;
+    private RouteEnum route = RouteEnum.RANDOM;
 
-    public ClientConfig setIp(String ip) {
-        this.ip = ip;
-        return this;
+    public String getHost() {
+        return host;
     }
 
-    public ClientConfig setPort(int port) {
-        this.port = port;
+    public ClientConfig setHost(String host) {
+        this.host = host;
         return this;
     }
 
@@ -54,14 +55,6 @@ public class ClientConfig<T> {
         return this;
     }
 
-    public String getIp() {
-        return ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
     public int getConnectTimeout() {
         return connectTimeout;
     }
@@ -76,5 +69,23 @@ public class ClientConfig<T> {
 
     public SerializableEnum getType() {
         return type;
+    }
+
+    public int getNettyBossThreadSize() {
+        return nettyBossThreadSize;
+    }
+
+    public ClientConfig setNettyBossThreadSize(int nettyBossThreadSize) {
+        this.nettyBossThreadSize = nettyBossThreadSize;
+        return this;
+    }
+
+    public RouteEnum getRoute() {
+        return route;
+    }
+
+    public ClientConfig setRoute(RouteEnum route) {
+        this.route = route;
+        return this;
     }
 }

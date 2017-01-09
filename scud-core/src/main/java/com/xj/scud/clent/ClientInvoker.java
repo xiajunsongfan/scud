@@ -24,6 +24,9 @@ public class ClientInvoker<T> implements Invoker<T> {
         ResponseFuture<RpcResult> future = MessageManager.setSeq(protocol.getSequence());
         ch.writeAndFlush(protocol);
         RpcResult result = future.get(config.getTimeout(), TimeUnit.MILLISECONDS);
+        if (result == null) {//客户端超时
+            MessageManager.remove(protocol.getSequence());
+        }
         return (T) result;
     }
 }
