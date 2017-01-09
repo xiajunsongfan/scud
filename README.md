@@ -23,7 +23,7 @@ scud 基于netty4开发的一个单机版的RPC服务
     clent 端：
 
     ClientConfig<Test> conf = new ClientConfig();
-    conf.setIp("127.0.0.1").setPort(7890).setTimeout(2000).setServerClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
+    conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServerClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
     Test t = ScudClientFactory.getServiceConsumer(conf);
 
     long st = System.currentTimeMillis();
