@@ -31,6 +31,12 @@ public class WeightRoute extends RpcRoute {
         if (channel == null) {
             lock.readLock().lock();
             try {
+                tail = nodes.tailMap(random.nextLong());
+                if (tail.isEmpty()) {
+                    ni = nodes.get(nodes.firstKey());
+                } else {
+                    ni = tail.get(tail.firstKey());
+                }
                 channel = serverNodes.get(ni);
             } finally {
                 lock.readLock().unlock();
