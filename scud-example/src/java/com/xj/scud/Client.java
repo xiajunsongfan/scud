@@ -14,7 +14,7 @@ import com.xj.scud.route.RouteEnum;
 public class Client {
     public static void main(String[] args) throws InterruptedException {
         ClientConfig<Test> conf = new ClientConfig();
-        conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServerClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
+        conf.setHost("127.0.0.1:7890").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServerClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
         Test t = ScudClientFactory.getServiceConsumer(conf);
 
         long st = System.currentTimeMillis();
@@ -23,5 +23,8 @@ public class Client {
             System.out.println(u.toString());
         }
         System.out.println((System.currentTimeMillis() - st) + "ms ");
+        Thread.sleep(10000);
+        String u = t.test();
+        System.out.println(u);
     }
 }

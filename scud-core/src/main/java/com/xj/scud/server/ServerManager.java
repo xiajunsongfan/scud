@@ -6,6 +6,8 @@ import com.xj.scud.core.ServiceMapper;
 import com.xj.scud.core.RpcInvocation;
 import com.xj.scud.core.RpcResult;
 import com.xj.scud.network.SerializableHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +65,16 @@ public class ServerManager {
                     try {
                         RpcResult result = buildRpcResult(200, throwable, res);
                         NetworkProtocol responseProtocol = protocolProcesser.buildResponseProtocol(protocol, result);
-                        ctx.writeAndFlush(responseProtocol);
+                        ChannelFuture channelFuture = ctx.writeAndFlush(responseProtocol);
+                        if (LOGGER.isDebugEnabled()) {
+                            final long startTime = System.currentTimeMillis();
+                            channelFuture.addListeners(new ChannelFutureListener() {
+                                @Override
+                                public void operationComplete(ChannelFuture future) throws Exception {
+                                    LOGGER.debug("Scud send msg packageId={} cost {}ms, exception={}", protocol.getSequence(), (System.currentTimeMillis() - startTime), future.cause());
+                                }
+                            });
+                        }
                     } catch (Exception e) {
                         LOGGER.error("Server invoke fail.", e);
                     }
