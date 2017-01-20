@@ -1,16 +1,13 @@
 package com.xj.scud.clent;
 
-import com.xj.scud.core.NetworkProtocol;
-import com.xj.scud.core.ProtocolProcesser;
-import com.xj.scud.core.RpcResult;
+import com.xj.scud.core.*;
 import com.xj.scud.network.netty.NettyClient;
 import com.xj.scud.route.NodeInfo;
 import com.xj.scud.route.RpcRoute;
 import io.netty.channel.Channel;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,14 +19,14 @@ public class ClientManager<T> {
     private static AtomicInteger seqCount = new AtomicInteger(0);
     private ProtocolProcesser processer;
     private ClientConfig config;
-    private Invoker<RpcResult> invoker;
+    private Invoker invoker;
     private NettyClient nettyClient;
     private RpcRoute route;
 
     public ClientManager(ProtocolProcesser processer, ClientConfig config) {
         this.processer = processer;
         this.config = config;
-        invoker = new ClientInvoker(config);
+        invoker = new ClientInvoker();
         nettyClient = new NettyClient(config);
         route = config.getRoute().getRoute();
     }
@@ -81,11 +78,57 @@ public class ClientManager<T> {
     public T invoke(Method method, Object[] args) throws Exception {
         int seq = seqCount.incrementAndGet();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
-        RpcResult result = this.invoker.invoke(this.getChannel(), protocol);
-        Throwable exception = result.getException();
-        if (exception != null) {
-            throw new Exception(exception);
+        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>();
+        MessageManager.setSeq(seq, rpcFuture);
+        this.invoker.invoke(this.getChannel(), protocol);
+        RpcResult result = null;
+        try {
+            result = rpcFuture.get(config.getTimeout(), TimeUnit.MILLISECONDS);
+        } finally {
+            if (result == null) {//客户端超时
+                MessageManager.remove(protocol.getSequence());
+            }
         }
-        return (T) result.getValue();
+        if (result != null) {
+            Throwable exception = result.getException();
+            if (exception != null) {
+                throw new Exception(exception);
+            }
+            return (T) result.getValue();
+        }
+        return null;
+    }
+
+    /**
+     * 异步获取调用结果
+     *
+     * @param method 方法
+     * @param args   参数
+     * @return RpcFuture<T>
+     * @throws Exception e
+     */
+    public RpcFuture<T> asyncFutureInvoke(Method method, Object[] args) throws Exception {
+        int seq = seqCount.incrementAndGet();
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
+        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>();
+        MessageManager.setSeq(seq, rpcFuture);
+        this.invoker.invoke(this.getChannel(), protocol);
+        return new ResultFuture<>(rpcFuture, seq);
+    }
+
+    /**
+     * 异步获取调用结果
+     *
+     * @param method   方法
+     * @param args     参数
+     * @param callback 回调函数
+     * @throws Exception e
+     */
+    public void asyncCallbackInvoke(Method method, Object[] args, RpcCallback callback) throws Exception {
+        int seq = seqCount.incrementAndGet();
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
+        RpcFuture<RpcResult> rpcFuture = new ResponseCallback<>(callback);
+        MessageManager.setSeq(seq, rpcFuture);
+        this.invoker.invoke(this.getChannel(), protocol);
     }
 }

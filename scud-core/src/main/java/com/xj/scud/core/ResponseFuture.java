@@ -1,13 +1,16 @@
 package com.xj.scud.core;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Author: xiajun
  * Date: 2017/01/06 19:24
  * 结果封装Future
  */
-public class ResponseFuture<T> implements Future<T> {
+public class ResponseFuture<T> implements RpcFuture<T> {
     private Semaphore lock = new Semaphore(0);
     private T response;
     private boolean done = false;
@@ -44,6 +47,11 @@ public class ResponseFuture<T> implements Future<T> {
             }
         }
         return this.response;
+    }
+
+    @Override
+    public void coypFuture(RpcFuture<T> future) {
+
     }
 
     /**

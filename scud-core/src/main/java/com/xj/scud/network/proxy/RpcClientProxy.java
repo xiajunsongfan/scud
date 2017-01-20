@@ -1,6 +1,8 @@
 package com.xj.scud.network.proxy;
 
 import com.xj.scud.clent.ClientManager;
+import com.xj.scud.core.RpcContext;
+import com.xj.scud.core.RpcFuture;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -13,7 +15,7 @@ import java.lang.reflect.Method;
  */
 public class RpcClientProxy<T> implements MethodInterceptor {
     private final Enhancer enhancer = new Enhancer();
-    private ClientManager manager;
+    protected ClientManager manager;
 
     public RpcClientProxy(ClientManager manager) {
         this.manager = manager;
@@ -46,6 +48,17 @@ public class RpcClientProxy<T> implements MethodInterceptor {
                 return (T) methodProxy.invokeSuper(obj, args);
             } catch (Throwable throwable) {
             }
+        }
+        return this.invoke(method, args);
+    }
+
+    public T invoke(Method method, Object[] args) throws Exception {
+        RpcContext context = RpcContext.getContext();
+        if (context.isCallbackInvoke()) {
+            manager.asyncCallbackInvoke(method, args, context.getRpcCallback());
+        } else if (context.isFutureInvoke()) {
+            RpcFuture<T> resultFuture = manager.asyncFutureInvoke(method, args);
+            context.getFuture().coypFuture(resultFuture);
         }
         return (T) manager.invoke(method, args);
     }
