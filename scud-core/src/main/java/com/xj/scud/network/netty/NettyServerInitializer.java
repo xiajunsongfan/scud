@@ -19,8 +19,6 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
-        //pipeline.addLast("idleState", new IdleStateHandler(5, 5, 3, TimeUnit.SECONDS));
-        //pipeline.addLast("idleEvent", new IdleEventHandler());
         // 字符串解码 和 编码
         pipeline.addLast("decoder", new NettyMessageDecoder());
         pipeline.addLast("encoder", new NettyMessageEncoder());

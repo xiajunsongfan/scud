@@ -49,18 +49,12 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
                 int len = in.readInt();
                 byte[] content = new byte[len];
                 in.readBytes(content);
-                //byte tail = in.readByte();
-                // if (tail == 126) {
                 NetworkProtocol protocol = new NetworkProtocol();
                 protocol.setVersion(version);
                 protocol.setType(type);
                 protocol.setSequence(seq);
                 protocol.setContent(content);
                 return protocol;
-                // } else {
-                //     in.clear();
-                //     LOGGER.error("Protocol tail parsing error ...");
-                // }
             } else {
                 in.clear();
                 LOGGER.error("Protocol head parsing error ...");

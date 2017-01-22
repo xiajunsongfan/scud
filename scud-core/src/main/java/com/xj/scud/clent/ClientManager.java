@@ -108,7 +108,7 @@ public class ClientManager<T> {
      * @throws Exception e
      */
     public RpcFuture<T> asyncFutureInvoke(Method method, Object[] args) throws Exception {
-        int seq = seqCount.incrementAndGet();
+        int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>();
         MessageManager.setSeq(seq, rpcFuture);
@@ -130,5 +130,14 @@ public class ClientManager<T> {
         RpcFuture<RpcResult> rpcFuture = new ResponseCallback<>(callback);
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol);
+    }
+
+    /**
+     * 生成一个包ID
+     *
+     * @return int
+     */
+    public static int createdPackageId() {
+        return seqCount.incrementAndGet();
     }
 }

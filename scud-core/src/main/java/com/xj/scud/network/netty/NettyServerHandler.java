@@ -18,6 +18,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, NetworkProtocol msg) throws Exception {
-        manager.invoke(msg, ctx);
+        if (msg.getType() == -1) {//心跳包
+            ctx.writeAndFlush(msg);
+        } else {
+            manager.invoke(msg, ctx);
+        }
     }
 }

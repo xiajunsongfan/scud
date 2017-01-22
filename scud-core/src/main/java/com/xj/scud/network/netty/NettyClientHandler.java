@@ -25,17 +25,21 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<NetworkProto
 
     @Override
     protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final NetworkProtocol msg) throws Exception {
-        this.executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RpcResult result = SerializableHandler.responseDecode(msg);
-                    MessageManager.release(msg.getSequence(), result);
-                } catch (Exception e) {
-                    LOGGER.error("Client handler fail.", e);
+        if (msg.getType() == -1) {
+            LOGGER.debug("Client recv heart package id={}", msg.getSequence());
+        } else {
+            this.executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        RpcResult result = SerializableHandler.responseDecode(msg);
+                        MessageManager.release(msg.getSequence(), result);
+                    } catch (Exception e) {
+                        LOGGER.error("Client handler fail.", e);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 }

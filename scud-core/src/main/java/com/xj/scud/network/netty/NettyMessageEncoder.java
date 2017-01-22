@@ -23,7 +23,7 @@ public class NettyMessageEncoder extends MessageToByteEncoder {
             out.writeByte(p.getVersion());//version
             out.writeByte(p.getType());//type
             out.writeInt(p.getSequence());//seq
-            out.writeInt(p.getContent().length);//len 加
+            out.writeInt(p.getContent().length);//len
             out.writeBytes(p.getContent());
             //out.writeByte(p.getTail());
         } catch (Exception e) {
