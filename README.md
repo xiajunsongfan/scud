@@ -26,12 +26,40 @@ scud 基于netty4开发的一个单机版的RPC服务
     conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServerClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
     Test t = ScudClientFactory.getServiceConsumer(conf);
 
+    /** 同步阻塞模式 **/
     long st = System.currentTimeMillis();
     String u = t.test();
     System.out.println(u.toString());
     User user = t.test("test2");
     System.out.println(user.toString());
     System.out.println((System.currentTimeMillis() - st) + "ms ");
+
+    /** 异步Future模式 **/
+    Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
+        @Override
+        public void prepare() {
+           t.test("22");
+        }
+    });
+    System.out.println(f.get());
+
+    /** 异步Callback模式 **/
+    RpcContext.invokeWithCallback(new AsyncPrepare() {
+       @Override
+        public void prepare() {
+           t.test("22");
+        }
+    }, new RpcCallback() {
+        @Override
+        public void success(Object value) {
+            System.out.println("callback: " + value);
+        }
+
+        @Override
+        public void fail(Throwable error) {
+            error.printStackTrace();
+        }
+    });
 
     例子可以参考scud-example
 

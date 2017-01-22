@@ -22,7 +22,7 @@ public class Client {
         conf.setHost("127.0.0.1:7890").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServerClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
         final Test t = ScudClientFactory.getServiceConsumer(conf);
 
-        /** 同步模式 **/
+        /** 同步阻塞模式 **/
         long st = System.currentTimeMillis();
         for (int i = 0; i < 6; i++) {
             String u = t.test();
@@ -33,7 +33,7 @@ public class Client {
         String u = t.test();
         System.out.println(u);
 
-        /** Future模式 **/
+        /** 异步Future模式 **/
         Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
             @Override
             public void prepare() {
@@ -42,7 +42,7 @@ public class Client {
         });
         System.out.println(f.get());
 
-        /** Callback模式 **/
+        /** 异步Callback模式 **/
         RpcContext.invokeWithCallback(new AsyncPrepare() {
             @Override
             public void prepare() {
