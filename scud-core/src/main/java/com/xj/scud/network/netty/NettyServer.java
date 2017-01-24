@@ -12,7 +12,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/02 12:32
  */
 public class NettyServer {

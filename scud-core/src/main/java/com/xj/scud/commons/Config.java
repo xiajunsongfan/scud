@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/22 10:13
  */
 public class Config {

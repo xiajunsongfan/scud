@@ -3,7 +3,7 @@ package com.xj.scud.core;
 import java.util.concurrent.Future;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/20 14:28
  */
 public class RpcContext {

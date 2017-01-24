@@ -4,7 +4,7 @@ import com.xj.scud.network.SerializableEnum;
 import com.xj.scud.route.RouteEnum;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 18:10
  */
 public class ClientConfig<T> {

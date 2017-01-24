@@ -10,7 +10,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 17:29
  */
 public class RpcClientProxy<T> implements MethodInterceptor {

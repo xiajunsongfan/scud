@@ -1,7 +1,7 @@
 package com.xj.scud.clent;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 18:04
  */
 public interface ScudCallback<T> {

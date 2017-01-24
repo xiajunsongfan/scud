@@ -12,7 +12,7 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 16:01
  */
 public class KryoSerializable<T> implements RpcSerializable<T> {

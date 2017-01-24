@@ -3,7 +3,7 @@ package com.xj.scud.core;
 import java.io.Serializable;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/02 17:08
  * 网络协议
  */

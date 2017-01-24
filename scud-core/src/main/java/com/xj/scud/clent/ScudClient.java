@@ -4,7 +4,7 @@ import com.xj.scud.core.ProtocolProcesser;
 import com.xj.scud.network.proxy.RpcClientProxy;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 18:01
  */
 public class ScudClient<T> {

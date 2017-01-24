@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/02 14:25
  */
 public class NettyServerHandler extends SimpleChannelInboundHandler<NetworkProtocol> {

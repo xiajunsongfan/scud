@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/04 09:40
  * 服务处理类
  */
@@ -62,21 +62,23 @@ public class ServerManager {
                         throwable = e;
                         LOGGER.error("Invoke exception.", e);
                     }
-                    try {
-                        RpcResult result = buildRpcResult(200, throwable, res);
-                        NetworkProtocol responseProtocol = protocolProcesser.buildResponseProtocol(protocol, result);
-                        ChannelFuture channelFuture = ctx.writeAndFlush(responseProtocol);
-                        if (LOGGER.isDebugEnabled()) {
-                            final long startTime = System.currentTimeMillis();
-                            channelFuture.addListeners(new ChannelFutureListener() {
-                                @Override
-                                public void operationComplete(ChannelFuture future) throws Exception {
-                                    LOGGER.debug("Scud send msg packageId={} cost {}ms, exception={}", protocol.getSequence(), (System.currentTimeMillis() - startTime), future.cause());
-                                }
-                            });
+                    if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用返回了
+                        try {
+                            RpcResult result = buildRpcResult(200, throwable, res);
+                            NetworkProtocol responseProtocol = protocolProcesser.buildResponseProtocol(protocol, result);
+                            ChannelFuture channelFuture = ctx.writeAndFlush(responseProtocol);
+                            if (LOGGER.isDebugEnabled()) {
+                                final long startTime = System.currentTimeMillis();
+                                channelFuture.addListeners(new ChannelFutureListener() {
+                                    @Override
+                                    public void operationComplete(ChannelFuture future) throws Exception {
+                                        LOGGER.debug("Scud send msg packageId={} cost {}ms, exception={}", protocol.getSequence(), (System.currentTimeMillis() - startTime), future.cause());
+                                    }
+                                });
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error("Server invoke fail.", e);
                         }
-                    } catch (Exception e) {
-                        LOGGER.error("Server invoke fail.", e);
                     }
                 }
             }
@@ -94,7 +96,10 @@ public class ServerManager {
      */
     private Object invoke0(String method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         Method m = ServiceMapper.getMethod(method);
-        return m.invoke(this.config.getService(), args);
+        if (m != null) {
+            return m.invoke(this.config.getService(), args);
+        }
+        throw new IllegalAccessException("No method: "+m.getName()+" find on the server");
     }
 
 

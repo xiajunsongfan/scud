@@ -1,7 +1,7 @@
 package com.xj.scud.network;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 12:07
  */
 public enum SerializableEnum {

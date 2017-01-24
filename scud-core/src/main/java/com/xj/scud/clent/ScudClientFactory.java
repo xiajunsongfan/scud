@@ -1,7 +1,7 @@
 package com.xj.scud.clent;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/04 15:06
  */
 public class ScudClientFactory {

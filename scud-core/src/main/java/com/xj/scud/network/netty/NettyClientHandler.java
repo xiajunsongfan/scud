@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/02 14:35
  */
 public class NettyClientHandler extends SimpleChannelInboundHandler<NetworkProtocol> {

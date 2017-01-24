@@ -9,7 +9,7 @@ import com.xj.scud.network.SerializableHandler;
 import java.lang.reflect.Method;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 18:20
  * 客户端协议封装
  */

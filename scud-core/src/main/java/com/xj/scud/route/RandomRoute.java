@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import java.util.Random;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/09 10:54
  */
 public class RandomRoute extends RotationRoute {

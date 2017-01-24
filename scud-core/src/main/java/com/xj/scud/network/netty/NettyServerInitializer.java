@@ -6,7 +6,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/02 14:22
  */
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {

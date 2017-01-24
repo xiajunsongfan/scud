@@ -1,7 +1,7 @@
 package com.xj.scud.route;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/09 10:56
  */
 public enum RouteEnum {

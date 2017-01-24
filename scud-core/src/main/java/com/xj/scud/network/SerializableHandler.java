@@ -6,7 +6,7 @@ import com.xj.scud.core.RpcResult;
 import com.xj.scud.core.NetworkProtocol;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/03 12:32
  */
 public class SerializableHandler {
