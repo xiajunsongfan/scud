@@ -9,5 +9,5 @@ import io.netty.channel.Channel;
  * Date: 2017/01/08 10:21
  */
 public interface Invoker {
-    void invoke(Channel ch, NetworkProtocol protocol) throws Exception;
+    void invoke(Channel ch, NetworkProtocol protocol,int packageId) throws Exception;
 }

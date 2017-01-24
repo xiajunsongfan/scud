@@ -80,7 +80,7 @@ public class ClientManager<T> {
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>();
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol);
+        this.invoker.invoke(this.getChannel(), protocol, seq);
         RpcResult result = null;
         try {
             result = rpcFuture.get(config.getTimeout(), TimeUnit.MILLISECONDS);
@@ -112,7 +112,7 @@ public class ClientManager<T> {
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>();
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol);
+        this.invoker.invoke(this.getChannel(), protocol, seq);
         return new ResultFuture<>(rpcFuture, seq);
     }
 
@@ -127,9 +127,9 @@ public class ClientManager<T> {
     public void asyncCallbackInvoke(Method method, Object[] args, RpcCallback callback) throws Exception {
         int seq = seqCount.incrementAndGet();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
-        RpcFuture<RpcResult> rpcFuture = new ResponseCallback<>(callback);
+        RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback);
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol);
+        this.invoker.invoke(this.getChannel(), protocol, seq);
     }
 
     /**
