@@ -8,7 +8,7 @@ import java.util.List;
  * Date: 2017/01/03 14:45
  */
 public class TestImpl implements Test {
-    public String test() {
+    public String test2() {
         return "hello test";
     }
 

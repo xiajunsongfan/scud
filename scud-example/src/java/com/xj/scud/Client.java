@@ -23,15 +23,9 @@ public class Client {
         final Test t = ScudClientFactory.getServiceConsumer(conf);
 
         /** 同步阻塞模式 **/
-        long st = System.currentTimeMillis();
-        for (int i = 0; i < 6; i++) {
-            String u = t.test();
-            System.out.println(u.toString());
-        }
-        System.out.println((System.currentTimeMillis() - st) + "ms ");
-        Thread.sleep(10000);
-        String u = t.test();
-        System.out.println(u);
+        Long stime = System.currentTimeMillis();
+        String u = t.test2();
+        System.out.println(u.toString() + " cost: " + (System.currentTimeMillis() - stime) + "ms");
 
         /** 异步Future模式 **/
         Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {

@@ -10,10 +10,14 @@ import java.util.concurrent.TimeoutException;
  * Date: 2017/01/06 19:24
  * 结果封装Future
  */
-public class ResponseFuture<T> implements RpcFuture<T> {
+public class ResponseFuture<T> extends RpcFuture<T> {
     private Semaphore lock = new Semaphore(0);
     private T response;
     private boolean done = false;
+
+    public ResponseFuture(int invokerTimeout) {
+        super(System.currentTimeMillis(), invokerTimeout);
+    }
 
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
@@ -50,12 +54,13 @@ public class ResponseFuture<T> implements RpcFuture<T> {
     }
 
     @Override
-    public void coypFuture(RpcFuture<T> future) {
+    public void copyFuture(RpcFuture<T> future) {
 
     }
 
     /**
      * 设置结果
+     *
      * @param response 服务返回结果
      */
     public void responseReceived(T response) {

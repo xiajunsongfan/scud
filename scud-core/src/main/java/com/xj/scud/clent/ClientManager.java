@@ -78,7 +78,7 @@ public class ClientManager<T> {
     public T invoke(Method method, Object[] args) throws Exception {
         int seq = seqCount.incrementAndGet();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
-        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>();
+        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
         RpcResult result = null;
@@ -110,7 +110,7 @@ public class ClientManager<T> {
     public RpcFuture<T> asyncFutureInvoke(Method method, Object[] args) throws Exception {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
-        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>();
+        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
         return new ResultFuture<>(rpcFuture, seq);
@@ -127,7 +127,7 @@ public class ClientManager<T> {
     public void asyncCallbackInvoke(Method method, Object[] args, RpcCallback callback) throws Exception {
         int seq = seqCount.incrementAndGet();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
-        RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback);
+        RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback, config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
     }
@@ -137,7 +137,7 @@ public class ClientManager<T> {
      *
      * @return int
      */
-    public static int createdPackageId() {
+    public int createdPackageId() {
         return seqCount.incrementAndGet();
     }
 }

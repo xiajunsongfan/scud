@@ -1,6 +1,9 @@
 package com.xj.scud.core;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -9,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MessageManager {
     private static Map<Integer, RpcFuture> msgManager = new ConcurrentHashMap<>(128);
-
 
     /**
      * 设置等待队列
@@ -41,5 +43,21 @@ public class MessageManager {
      */
     public static void remove(int seq) {
         msgManager.remove(seq);
+    }
+
+    static {
+        Timer timer = new Timer("Scud-response-timer", true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Iterator<Map.Entry<Integer, RpcFuture>> it = msgManager.entrySet().iterator();
+                while (it.hasNext()) {
+                    RpcFuture rpcFuture = it.next().getValue();
+                    if (rpcFuture.getInvokerTimeout() > 0 && System.currentTimeMillis() - rpcFuture.sendTime > rpcFuture.getInvokerTimeout()) {
+                        it.remove();
+                    }
+                }
+            }
+        }, 5000, 3000);
     }
 }

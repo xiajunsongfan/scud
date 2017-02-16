@@ -58,7 +58,7 @@ public class RpcClientProxy<T> implements MethodInterceptor {
             manager.asyncCallbackInvoke(method, args, context.getRpcCallback());
         } else if (context.isFutureInvoke()) {
             RpcFuture<T> resultFuture = manager.asyncFutureInvoke(method, args);
-            context.getFuture().coypFuture(resultFuture);
+            context.getFuture().copyFuture(resultFuture);
         }
         return (T) manager.invoke(method, args);
     }

@@ -13,16 +13,21 @@ public class ResultFuture<T> extends ResponseFuture<T> {
     private int packageId;
 
     public ResultFuture(RpcFuture<RpcResult> future, int packageId) {
+        super(future.invokerTimeout);
         this.future = future;
         this.packageId = packageId;
     }
 
-    public ResultFuture() {
+    public ResultFuture(int invokerTimeout) {
+        super(invokerTimeout);
+    }
 
+    public ResultFuture() {
+        this(0);
     }
 
     @Override
-    public void coypFuture(RpcFuture<T> future) {
+    public void copyFuture(RpcFuture<T> future) {
         if (future == null) {
             throw new NullPointerException("Future is null");
         }

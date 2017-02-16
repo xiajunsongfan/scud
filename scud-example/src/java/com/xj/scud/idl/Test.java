@@ -5,7 +5,7 @@ package com.xj.scud.idl;
  * Date: 2017/01/03 14:55
  */
 public interface Test {
-    String test();
+    String test2();
 
     User test(String s);
 
