@@ -11,7 +11,7 @@ public class ClientConfig<T> {
     private String host;
     private int connectTimeout;
     private int timeout;
-    private Class<T> serverClass;//服务接口类
+    private Class<T> serviceClass;//服务接口类
     private SerializableEnum type = SerializableEnum.KRYO;
     private int workThreadSize;
     private int nettyBossThreadSize = 1;
@@ -36,8 +36,8 @@ public class ClientConfig<T> {
         return this;
     }
 
-    public ClientConfig setServerClass(Class<T> serverClass) {
-        this.serverClass = serverClass;
+    public ClientConfig setServiceClass(Class<T> serviceClass) {
+        this.serviceClass = serviceClass;
         return this;
     }
 
@@ -63,8 +63,8 @@ public class ClientConfig<T> {
         return timeout;
     }
 
-    public Class getServerClass() {
-        return serverClass;
+    public Class getServiceClass() {
+        return serviceClass;
     }
 
     public SerializableEnum getType() {

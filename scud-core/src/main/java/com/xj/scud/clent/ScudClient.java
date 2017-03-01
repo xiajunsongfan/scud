@@ -41,7 +41,7 @@ public class ScudClient<T> {
         synchronized (ScudClient.class) {
             if (client == null) {
                 RpcClientProxy proxy = new RpcClientProxy(manager);
-                this.client = (T) proxy.getProxy(this.conf.getServerClass());
+                this.client = (T) proxy.getProxy(this.conf.getServiceClass());
             }
         }
         return this.client;
