@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 public class RpcClientProxy<T> implements MethodInterceptor {
     private final Enhancer enhancer = new Enhancer();
     protected ClientManager manager;
+    private String serviceName;
 
     public RpcClientProxy(ClientManager manager) {
         this.manager = manager;
@@ -30,6 +31,7 @@ public class RpcClientProxy<T> implements MethodInterceptor {
     public T getProxy(Class<T> interfaceClass) {
         enhancer.setSuperclass(interfaceClass);
         enhancer.setCallback(this);
+        serviceName = interfaceClass.getName();
         return (T) enhancer.create();
     }
 
@@ -55,11 +57,11 @@ public class RpcClientProxy<T> implements MethodInterceptor {
     public T invoke(Method method, Object[] args) throws Exception {
         RpcContext context = RpcContext.getContext();
         if (context.isCallbackInvoke()) {
-            manager.asyncCallbackInvoke(method, args, context.getRpcCallback());
+            manager.asyncCallbackInvoke(serviceName, method, args, context.getRpcCallback());
         } else if (context.isFutureInvoke()) {
-            RpcFuture<T> resultFuture = manager.asyncFutureInvoke(method, args);
+            RpcFuture<T> resultFuture = manager.asyncFutureInvoke(serviceName, method, args);
             context.getFuture().copyFuture(resultFuture);
         }
-        return (T) manager.invoke(method, args);
+        return (T) manager.invoke(serviceName, method, args);
     }
 }

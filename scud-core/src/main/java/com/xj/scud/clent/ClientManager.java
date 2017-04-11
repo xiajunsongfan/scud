@@ -75,9 +75,9 @@ public class ClientManager<T> {
      * @return T
      * @throws Exception e
      */
-    public T invoke(Method method, Object[] args) throws Exception {
+    public T invoke(String serviceName, Method method, Object[] args) throws Exception {
         int seq = seqCount.incrementAndGet();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
@@ -107,9 +107,9 @@ public class ClientManager<T> {
      * @return RpcFuture<T>
      * @throws Exception e
      */
-    public RpcFuture<T> asyncFutureInvoke(Method method, Object[] args) throws Exception {
+    public RpcFuture<T> asyncFutureInvoke(String serviceName, Method method, Object[] args) throws Exception {
         int seq = createdPackageId();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
@@ -124,9 +124,9 @@ public class ClientManager<T> {
      * @param callback 回调函数
      * @throws Exception e
      */
-    public void asyncCallbackInvoke(Method method, Object[] args, RpcCallback callback) throws Exception {
+    public void asyncCallbackInvoke(String serviceName, Method method, Object[] args, RpcCallback callback) throws Exception {
         int seq = seqCount.incrementAndGet();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(method, args, seq);
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback, config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);

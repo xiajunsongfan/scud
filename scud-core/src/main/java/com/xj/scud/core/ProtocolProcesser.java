@@ -1,9 +1,6 @@
 package com.xj.scud.core;
 
 import com.xj.scud.clent.ClientConfig;
-import com.xj.scud.core.NetworkProtocol;
-import com.xj.scud.core.RpcInvocation;
-import com.xj.scud.core.RpcResult;
 import com.xj.scud.network.SerializableHandler;
 
 import java.lang.reflect.Method;
@@ -27,8 +24,9 @@ public class ProtocolProcesser {
      * @param args   参数
      * @return RpcInvocation
      */
-    public NetworkProtocol buildRequestProtocol(Method method, Object[] args, int seq) {
+    public NetworkProtocol buildRequestProtocol(String serviceName, Method method, Object[] args, int seq) {
         RpcInvocation invocation = new RpcInvocation();
+        invocation.setService(serviceName);
         invocation.setMethod(method.getName());
         invocation.setArgs(args);
         invocation.setRequestTime(System.currentTimeMillis());

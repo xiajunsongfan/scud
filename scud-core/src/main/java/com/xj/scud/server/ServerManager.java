@@ -57,7 +57,7 @@ public class ServerManager {
                     Object res = null;
                     Throwable throwable = null;
                     try {
-                        res = invoke0(methodName, invocation.getArgs());
+                        res = invoke0(invocation.getService(), methodName, invocation.getArgs());
                     } catch (Exception e) {
                         throwable = e;
                         LOGGER.error("Invoke exception.", e);
@@ -94,12 +94,13 @@ public class ServerManager {
      * @throws InvocationTargetException e
      * @throws IllegalAccessException    e
      */
-    private Object invoke0(String method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        Method m = ServiceMapper.getMethod(method);
+    private Object invoke0(String serviceName, String method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+        Object service = ServiceMapper.getSerivce(serviceName);
+        Method m = ServiceMapper.getMethod(serviceName, method);
         if (m != null) {
-            return m.invoke(this.config.getService(), args);
+            return m.invoke(service, args);
         }
-        throw new IllegalAccessException("No method: "+m.getName()+" find on the server");
+        throw new IllegalAccessException("No method: " + m.getName() + " find on the server");
     }
 
 

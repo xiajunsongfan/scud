@@ -20,8 +20,8 @@ public class ScudServer {
     }
 
     public void start() {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new DefaultThreadFactory("scud-server-work",true), new ThreadPoolExecutor.CallerRunsPolicy());
-        ServiceMapper.init(this.config.getServiceClass());
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
+        ServiceMapper.init(this.config.getServiceClasses(), this.config.getServices());
         ServerManager manager = new ServerManager(config, executor);
         NettyServer.start(this.config, manager);
     }

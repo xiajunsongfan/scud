@@ -16,7 +16,7 @@ scud 基于netty4开发的一个单机版的RPC服务
 ```java
 	server 端：
 	ServerConfig conf = new ServerConfig();
-    conf.setPort(7890).setServiceClass(Test.class).setService(new TestImpl()).setCorePoolSize(12);
+    conf.setPort(7890).setServiceClasses(Test.class).setServices(new TestImpl()).setCorePoolSize(12);
     cudServer server = new ScudServer(conf);
     server.start();
 
@@ -30,7 +30,7 @@ scud 基于netty4开发的一个单机版的RPC服务
     long st = System.currentTimeMillis();
     String u = t.test();
     System.out.println(u.toString());
-    User user = t.test("test2");
+    User user = t.test("test");
     System.out.println(user.toString());
     System.out.println((System.currentTimeMillis() - st) + "ms ");
 
@@ -38,7 +38,7 @@ scud 基于netty4开发的一个单机版的RPC服务
     Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
         @Override
         public void prepare() {
-           t.test("22");
+           t.test("test");
         }
     });
     System.out.println(f.get());
@@ -47,7 +47,7 @@ scud 基于netty4开发的一个单机版的RPC服务
     RpcContext.invokeWithCallback(new AsyncPrepare() {
        @Override
         public void prepare() {
-           t.test("22");
+           t.test("test");
         }
     }, new RpcCallback() {
         @Override

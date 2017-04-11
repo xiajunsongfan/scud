@@ -31,7 +31,7 @@ public class Client {
         Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
             @Override
             public void prepare() {
-                t.test("22");
+                t.test("test");
             }
         });
         System.out.println(f.get());
@@ -40,7 +40,7 @@ public class Client {
         RpcContext.invokeWithCallback(new AsyncPrepare() {
             @Override
             public void prepare() {
-                t.test("22");
+                t.test("test");
             }
         }, new RpcCallback() {
             @Override

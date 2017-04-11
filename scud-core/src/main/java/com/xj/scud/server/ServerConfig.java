@@ -9,8 +9,8 @@ public class ServerConfig<T> {
     private int port;//服务端口
     private int corePoolSize;//服务work线程数
     private int nettyWorkPooleSize = 2;//netty work线程数
-    private Class serviceClass;//服务接口class
-    private T service;//服务实现类对象
+    private Class serviceClasses[];//服务接口class
+    private T services[];//服务实现类对象
     private int connentTimeout;//连接超时时间 毫秒
 
     public String getIp() {
@@ -40,21 +40,31 @@ public class ServerConfig<T> {
         return this;
     }
 
-    public Class getServiceClass() {
-        return serviceClass;
+    public Class[] getServiceClasses() {
+        return serviceClasses;
     }
 
-    public ServerConfig setServiceClass(Class serviceClass) {
-        this.serviceClass = serviceClass;
+    /**
+     * 服务接口class,需要和服务
+     */
+    public ServerConfig setServiceClasses(Class... serviceClasses) {
+        this.serviceClasses = serviceClasses;
         return this;
     }
 
-    public T getService() {
-        return service;
+    public T[] getServices() {
+        return services;
     }
 
-    public ServerConfig setService(T service) {
-        this.service = service;
+    /**
+     * 服务实现类对象
+     * 该实现类为可变参数，需要和接口class一一对应
+     *
+     * @param services
+     * @return
+     */
+    public ServerConfig setServices(T... services) {
+        this.services = services;
         return this;
     }
 
