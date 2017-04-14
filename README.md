@@ -74,7 +74,7 @@ scud 基于netty4开发的一个单机版的RPC服务
 
         <scud:serverConfig id="serverConfig" port="7890"  nettyWorkPooleSize="2" corePoolSize="4"/>
 
-        <scud:server id="324" config="serverConfig">
+        <scud:server id="server" config="serverConfig">
             <scud:providers>
                 <scud:provider interface="com.xj.scud.idl.Test" ref="testService" version="1.0.0"/>
             </scud:providers>
