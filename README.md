@@ -14,14 +14,13 @@ scud 基于netty4开发的一个单机版的RPC服务
 ```
 
 ```java
-	server 端：
-	ServerConfig conf = new ServerConfig();
+    /** server 端 **/
+    ServerConfig conf = new ServerConfig();
     conf.setPort(7890).setServiceClasses(Test.class).setServices(new TestImpl()).setCorePoolSize(12);
     cudServer server = new ScudServer(conf);
     server.start();
 
-    clent 端：
-
+    /** clent 端 **/
     ClientConfig<Test> conf = new ClientConfig();
     conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServiceClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
     Test t = ScudClientFactory.getServiceConsumer(conf);
