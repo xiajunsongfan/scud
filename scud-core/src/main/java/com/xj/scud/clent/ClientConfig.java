@@ -10,17 +10,24 @@ import com.xj.scud.route.RouteEnum;
 public class ClientConfig<T> {
     private String host;
     private int connectTimeout;
-    private int timeout;
+    private int timeout = 1000;
     private Class<T> serviceClass;//服务接口类
-    private SerializableEnum type = SerializableEnum.KRYO;
-    private int workThreadSize;
+    private String version;//服务版本
+    private SerializableEnum type = SerializableEnum.PROTOBUF;//序列化方式
+    private int workThreadSize = 4;
     private int nettyBossThreadSize = 1;
-    private RouteEnum route = RouteEnum.RANDOM;
+    private RouteEnum route = RouteEnum.RANDOM;//路由方式
 
     public String getHost() {
         return host;
     }
 
+    /**
+     * 服务端hosts
+     *
+     * @param host 如：192.168.1.13:5555;192.168.1.14:5555
+     * @return
+     */
     public ClientConfig setHost(String host) {
         this.host = host;
         return this;
@@ -87,5 +94,13 @@ public class ClientConfig<T> {
     public ClientConfig setRoute(RouteEnum route) {
         this.route = route;
         return this;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.xj.com/schema/scud"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tool="http://www.springframework.org/schema/tool"
+            targetNamespace="http://www.xj.com/schema/scud"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified"
+            version="1.0.0">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool.xsd"/>
+
+    <xsd:complexType name="serverConfig">
+        <xsd:attribute name="id" type="xsd:ID" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="port" type="xsd:int" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The service port.]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="host" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The service binding ip. default: 0.0.0.0]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="corePoolSize" type="xsd:int" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The server work thread number. default: 8]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="nettyWorkPooleSize" type="xsd:int" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The server netty work thread number. default: 2]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="connentTimeout" type="xsd:int" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The server response timeout. default: 1000ms]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="serverBean">
+        <xsd:sequence>
+            <xsd:element name="providers" type="providers" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[ server beans not need to inject. ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="config" type="xsd:string" use="required"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="providerBean">
+        <xsd:attribute name="interface" type="xsd:token" use="required">
+            <xsd:annotation>
+                <xsd:appinfo>
+                    <tool:annotation>
+                        <tool:expected-type type="java.lang.Class"/>
+                    </tool:annotation>
+                </xsd:appinfo>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="version" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The service version. 1.0.0 or 2.0.0]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="ref" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="providers">
+        <xsd:sequence>
+            <xsd:element name="provider" type="providerBean" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="clientBean">
+        <xsd:attribute name="id" type="xsd:ID" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="host" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The service binding ip. default: 0.0.0.0]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="interface" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:appinfo>
+                    <tool:annotation>
+                        <tool:expected-type type="java.lang.Class"/>
+                    </tool:annotation>
+                </xsd:appinfo>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="version" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The service version. 1.0.0 or 2.0.0]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timeout" type="xsd:int" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The server read timeout. default: 1000]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="workThreadSize" type="xsd:int" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The server netty work thread number. default: 4]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="connentTimeout" type="xsd:int" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The server response timeout. default: 1000ms]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="nettyBossThreadSize" type="xsd:int" use="optional">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The server netty boss thread number. default: 1]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="type" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="protobuf"/>
+                    <xsd:enumeration value="kryo"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="route" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="random"/>
+                    <xsd:enumeration value="weight"/>
+                    <xsd:enumeration value="rotation"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="lazy-init" type="xsd:boolean" use="optional" default="false">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[The service bean lazy init]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+
+    <xsd:element name="server" type="serverBean"/>
+    <xsd:element name="serverConfig" type="serverConfig"/>
+    <xsd:element name="client" type="clientBean"/>
+</xsd:schema>

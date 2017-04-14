@@ -7,7 +7,7 @@ package com.xj.scud.server;
 public class ServerConfig<T> {
     private String ip = "0.0.0.0";
     private int port;//服务端口
-    private int corePoolSize;//服务work线程数
+    private int corePoolSize = 8;//服务work线程数
     private int nettyWorkPooleSize = 2;//netty work线程数
     private Class serviceClasses[];//服务接口class
     private T services[];//服务实现类对象

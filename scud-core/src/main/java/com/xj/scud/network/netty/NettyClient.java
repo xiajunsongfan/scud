@@ -41,7 +41,12 @@ public class NettyClient {
                 .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(64, 1024, 65536))
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         boot.group(boss).channel(NioSocketChannel.class).handler(new NettyClientInitializer(executor));
-        return boot.connect(ip, port).channel();
+        try {
+            return boot.connect(ip, port).sync().channel();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static int getThreadSize(int size) {

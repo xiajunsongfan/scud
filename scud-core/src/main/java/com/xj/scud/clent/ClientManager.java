@@ -52,7 +52,6 @@ public class ClientManager<T> {
                 Channel ch = this.initChannel(ip, port);
                 NodeInfo nodeInfo = new NodeInfo(ip, port);
                 route.addServerNode(nodeInfo, ch);
-
             }
         }
     }
