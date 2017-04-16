@@ -53,9 +53,11 @@
             </xsd:annotation>
         </xsd:attribute>
         <xsd:attribute name="config" type="xsd:string" use="required"></xsd:attribute>
+
     </xsd:complexType>
 
     <xsd:complexType name="providerBean">
+        <xsd:attribute name="id" type="xsd:string" use="optional"></xsd:attribute>
         <xsd:attribute name="interface" type="xsd:token" use="required">
             <xsd:annotation>
                 <xsd:appinfo>
@@ -147,7 +149,6 @@
             </xsd:annotation>
         </xsd:attribute>
     </xsd:complexType>
-
 
     <xsd:element name="server" type="serverBean"/>
     <xsd:element name="serverConfig" type="serverConfig"/>

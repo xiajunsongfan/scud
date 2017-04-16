@@ -47,4 +47,9 @@ public class ServerParser extends AbstractSingleBeanDefinitionParser {
     protected Class<?> getBeanClass(Element element) {
         return ServerBean.class;
     }
+
+    @Override
+    protected boolean shouldGenerateId() {
+        return true;
+    }
 }
