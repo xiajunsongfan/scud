@@ -28,6 +28,7 @@ public class NettyMessageEncoder extends MessageToByteEncoder {
             //out.writeByte(p.getTail());
         } catch (Exception e) {
             LOGGER.error("Encode fail. seq={} , remoteAddress: {}", p.getSequence(), ctx.channel().remoteAddress(), e);
+            throw new Exception("Encoding msg fail. seq=" + p.getSequence(), e);
         }
     }
 }

@@ -11,7 +11,7 @@ public class ClientConfig<T> {
     private String host;
     private int connectTimeout;
     private int timeout = 1000;
-    private Class<T> serviceClass;//服务接口类
+    private Class<T> interfaze;//服务接口类
     private String version;//服务版本
     private SerializableEnum type = SerializableEnum.PROTOBUF;//序列化方式
     private int workThreadSize = 4;
@@ -43,11 +43,6 @@ public class ClientConfig<T> {
         return this;
     }
 
-    public ClientConfig setServiceClass(Class<T> serviceClass) {
-        this.serviceClass = serviceClass;
-        return this;
-    }
-
     public ClientConfig setType(SerializableEnum type) {
         this.type = type;
         return this;
@@ -62,16 +57,21 @@ public class ClientConfig<T> {
         return this;
     }
 
+    public Class<T> getInterfaze() {
+        return interfaze;
+    }
+
+    public ClientConfig setInterfaze(Class<T> interfaze) {
+        this.interfaze = interfaze;
+        return this;
+    }
+
     public int getConnectTimeout() {
         return connectTimeout;
     }
 
     public int getTimeout() {
         return timeout;
-    }
-
-    public Class getServiceClass() {
-        return serviceClass;
     }
 
     public SerializableEnum getType() {
@@ -100,7 +100,8 @@ public class ClientConfig<T> {
         return version;
     }
 
-    public void setVersion(String version) {
+    public ClientConfig setVersion(String version) {
         this.version = version;
+        return this;
     }
 }

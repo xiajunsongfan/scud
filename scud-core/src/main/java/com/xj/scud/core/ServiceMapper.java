@@ -1,5 +1,7 @@
 package com.xj.scud.core;
 
+import com.xj.scud.server.Provider;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,31 +18,23 @@ public class ServiceMapper {
     /**
      * 将方法进行映射
      *
-     * @param classes 接口class
+     * @param providers 服务提供者
      */
-    public static void init(Class[] classes, Object[] services) {
-        if (classes == null) {
-            throw new IllegalArgumentException("Service interface class can't null.");
+    public static void init(Provider[] providers) {
+        if (providers == null) {
+            throw new IllegalArgumentException("Service provider can't null.");
         }
-        if (services == null) {
-            throw new IllegalArgumentException("Service interface implement object can't null.");
-        }
-        if (classes.length != services.length) {
-            throw new IllegalArgumentException("Service interface and implementation classes can't corresponding.");
-        }
-        serviceMethodMap = new HashMap<>(classes.length);
-        for (Class clazz : classes) {
-            Method[] methods = clazz.getMethods();
+        serviceMethodMap = new HashMap<>(providers.length);
+        servicesMap = new HashMap<>(providers.length);
+        for (Provider provider : providers) {
+            Method[] methods = provider.getInterfaze().getMethods();
             Map<String, Method> methodMap = new HashMap<>(methods.length);
-            serviceMethodMap.put(clazz.getName(), methodMap);
+            String serviceName = buildServiceName(provider.getInterfaze().getName(), provider.getVersion());
+            serviceMethodMap.put(serviceName, methodMap);
             for (Method method : methods) {
                 methodMap.put(ProtocolProcesser.buildMethodName(method), method);
             }
-        }
-        servicesMap = new HashMap<>();
-        for (int i = 0; i < services.length; i++) {
-            Object service = services[i];
-            servicesMap.put(classes[i].getName(), service);
+            servicesMap.put(serviceName, provider.getService());
         }
     }
 
@@ -51,8 +45,12 @@ public class ServiceMapper {
      * @param method  方法标识
      * @return Method
      */
-    public static Method getMethod(String service, String method) {
-        return serviceMethodMap.get(service).get(method);
+    public static Method getMethod(String service, String version, String method) {
+        Method m = serviceMethodMap.get(buildServiceName(service, version)).get(method);
+        if (m == null) {
+            throw new NullPointerException("The " + method + " method was not found in the " + service + " service, version:" + version);
+        }
+        return m;
     }
 
     /**
@@ -61,7 +59,15 @@ public class ServiceMapper {
      * @param service 服务名称
      * @return Object
      */
-    public static Object getSerivce(String service) {
-        return servicesMap.get(service);
+    public static Object getSerivce(String service, String version) {
+        Object obj = servicesMap.get(buildServiceName(service, version));
+        if (obj == null) {
+            throw new NullPointerException("Not foud service:" + service + " version:" + version);
+        }
+        return obj;
+    }
+
+    private static String buildServiceName(String service, String version) {
+        return service + ":" + version;
     }
 }

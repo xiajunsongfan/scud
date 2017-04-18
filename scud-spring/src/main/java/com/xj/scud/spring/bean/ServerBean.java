@@ -1,5 +1,6 @@
 package com.xj.scud.spring.bean;
 
+import com.xj.scud.server.Provider;
 import com.xj.scud.server.ScudServer;
 import com.xj.scud.server.ServerConfig;
 import org.slf4j.Logger;
@@ -49,12 +50,10 @@ public class ServerBean implements InitializingBean, ApplicationListener<Context
         if (this.config.getHost() != null && !"".equals(this.config.getHost())) {
             conf.setIp(this.config.getHost());
         }
-        Class[] interfaces = new Class[providers.size()];
-        Object[] impls = new Object[providers.size()];
+        Provider[] provs = new Provider[providers.size()];
         for (int i = 0; i < providers.size(); i++) {
             ProviderBean providerBean = providers.get(i);
-            interfaces[i] = providerBean.getInterfaze();
-            impls[i] = providerBean.getRef();
+            provs[i] = new Provider(providerBean.getInterfaze(), providerBean.getRef(), providerBean.getVersion());
         }
         if (config.getConnentTimeout() > 0) {
             conf.setConnentTimeout(config.getConnentTimeout());
@@ -65,8 +64,8 @@ public class ServerBean implements InitializingBean, ApplicationListener<Context
         if (config.getNettyWorkPooleSize() > 0) {
             conf.setNettyWorkPooleSize(config.getNettyWorkPooleSize());
         }
-        conf.setPort(config.getPort()).setServiceClasses(interfaces).setServices(impls);
-        ScudServer server = new ScudServer(conf);
+        conf.setPort(config.getPort());
+        ScudServer server = new ScudServer(conf, provs);
         server.start();
     }
 }

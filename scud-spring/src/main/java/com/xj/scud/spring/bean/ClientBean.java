@@ -15,7 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class ClientBean<T> implements FactoryBean, InitializingBean {
     private String host;
     private Class interfaceClass;
-    private String version;
+    private String version="1.0";
     private int timeout;
     private int workThreadSize;
     private int connentTimeout;
@@ -139,7 +139,7 @@ public class ClientBean<T> implements FactoryBean, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         ClientConfig<T> conf = new ClientConfig();
-        conf.setServiceClass(interfaceClass).setHost(this.host);
+        conf.setInterfaze(interfaceClass).setHost(this.host);
         if (version != null) {
             conf.setVersion(version);
         }

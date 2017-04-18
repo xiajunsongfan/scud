@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 public class Client {
     public static void main(String[] args) throws Exception {
         final ClientConfig<Test> conf = new ClientConfig();
-        conf.setHost("127.0.0.1:7890").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServiceClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
+        conf.setHost("127.0.0.1:7890").setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
         final Test t = ScudClientFactory.getServiceConsumer(conf);
 
         /** 同步阻塞模式 **/

@@ -13,7 +13,7 @@
 
     <scud:server id="324" config="serverConfig">
         <scud:providers>
-            <scud:provider interface="com.xj.scud.commons.Config" ref="testService" version="1.0.0"/>
+            <scud:provider interface="com.xj.scud.commons.Config" ref="testService" version="1.0.1"/>
         </scud:providers>
     </scud:server>
 

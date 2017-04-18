@@ -20,13 +20,16 @@ public class ProtocolProcesser {
     /**
      * 封装客户端RPC调用协议
      *
-     * @param method 方法
-     * @param args   参数
+     * @param serviceName 服务名称
+     * @param version     服务版本
+     * @param method      方法
+     * @param args        参数
      * @return RpcInvocation
      */
-    public NetworkProtocol buildRequestProtocol(String serviceName, Method method, Object[] args, int seq) {
+    public NetworkProtocol buildRequestProtocol(String serviceName, String version, Method method, Object[] args, int seq) {
         RpcInvocation invocation = new RpcInvocation();
         invocation.setService(serviceName);
+        invocation.setVersion(version);
         invocation.setMethod(method.getName());
         invocation.setArgs(args);
         invocation.setRequestTime(System.currentTimeMillis());

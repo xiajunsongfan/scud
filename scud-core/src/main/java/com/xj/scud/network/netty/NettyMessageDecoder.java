@@ -17,7 +17,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
     private final static Logger LOGGER = LoggerFactory.getLogger(NettyMessageDecoder.class);
 
     public NettyMessageDecoder() {
-        super(Integer.MAX_VALUE, 7, 4, 0, 0);
+        super(Integer.MAX_VALUE, 7, 4, 0, 0,false);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
                 return this.decode(frame, ctx);
             }
         } catch (Exception t) {
-            LOGGER.error("Decode msg fail! remoteAddress:{}", ctx.channel().remoteAddress(), t);
+            LOGGER.error("Decoding msg fail! remoteAddress:{}", ctx.channel().remoteAddress(), t);
             throw t;
         } finally {
             if (frame != null) {
@@ -57,7 +57,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
                 return protocol;
             } else {
                 in.clear();
-                LOGGER.error("Protocol head parsing error ...");
+                LOGGER.error("Protocol head parsing error, head={}", head);
             }
         }
         return null;

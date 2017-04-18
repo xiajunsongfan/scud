@@ -11,6 +11,7 @@ import java.util.Map;
 public class RpcInvocation implements Serializable {
     private static final long serialVersionUID = -5618624997366006383L;
     private String service;//服务名称
+    private String version;//服务版本
     private String method;//方法名称
     private Object[] args;//方法参数
     private String[] argTypes;//方法参数类型
@@ -72,5 +73,13 @@ public class RpcInvocation implements Serializable {
 
     public void setAttach(Map<String, Object> attach) {
         this.attach = attach;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

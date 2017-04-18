@@ -15,14 +15,15 @@ scud 基于netty4开发的一个单机版的RPC服务
 
 ```java
     /** server 端 **/
-    ServerConfig conf = new ServerConfig();
-    conf.setPort(7890).setServiceClasses(Test.class).setServices(new TestImpl()).setCorePoolSize(12);
-    cudServer server = new ScudServer(conf);
-    server.start();
+     ServerConfig conf = new ServerConfig();
+     conf.setPort(7890).setCorePoolSize(12);
+     Provider<Test> provider = new Provider<>(Test.class, new TestImpl(), "1.0.1");
+     ScudServer server = new ScudServer(conf, provider);
+     server.start();
 
     /** clent 端 **/
     ClientConfig<Test> conf = new ClientConfig();
-    conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setServiceClass(Test.class).setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
+    conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
     Test t = ScudClientFactory.getServiceConsumer(conf);
 
     /** 同步阻塞模式 **/
@@ -75,11 +76,11 @@ scud 基于netty4开发的一个单机版的RPC服务
 
         <scud:server config="serverConfig">
             <scud:providers>
-                <scud:provider interface="com.xj.scud.idl.Test" ref="testService" version="1.0.0"/>
+                <scud:provider interface="com.xj.scud.idl.Test" ref="testService" version="1.0.1"/>
             </scud:providers>
         </scud:server>
 
-        <scud:client id="client" host="127.0.0.1:7890" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true"/>
+        <scud:client id="client" host="127.0.0.1:7890" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.1"/>
     </beans>
 
     例子可以参考scud-example

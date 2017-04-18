@@ -14,14 +14,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class ScudServer {
     private ServerConfig config;
+    private Provider[] providers;
 
-    public ScudServer(ServerConfig config) {
+    public ScudServer(ServerConfig config, Provider... providers) {
         this.config = config;
+        this.providers = providers;
     }
 
     public void start() {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
-        ServiceMapper.init(this.config.getServiceClasses(), this.config.getServices());
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
+        ServiceMapper.init(this.providers);
         ServerManager manager = new ServerManager(config, executor);
         NettyServer.start(this.config, manager);
     }

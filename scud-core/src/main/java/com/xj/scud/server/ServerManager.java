@@ -1,10 +1,6 @@
 package com.xj.scud.server;
 
-import com.xj.scud.core.NetworkProtocol;
-import com.xj.scud.core.ProtocolProcesser;
-import com.xj.scud.core.ServiceMapper;
-import com.xj.scud.core.RpcInvocation;
-import com.xj.scud.core.RpcResult;
+import com.xj.scud.core.*;
 import com.xj.scud.network.SerializableHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -57,9 +53,9 @@ public class ServerManager {
                     Object res = null;
                     Throwable throwable = null;
                     try {
-                        res = invoke0(invocation.getService(), methodName, invocation.getArgs());
+                        res = invoke0(invocation.getService(), invocation.getVersion(), methodName, invocation.getArgs());
                     } catch (Exception e) {
-                        throwable = e;
+                        throwable = new Exception("Server exception.",e);
                         LOGGER.error("Invoke exception.", e);
                     }
                     if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用返回了
@@ -94,9 +90,9 @@ public class ServerManager {
      * @throws InvocationTargetException e
      * @throws IllegalAccessException    e
      */
-    private Object invoke0(String serviceName, String method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        Object service = ServiceMapper.getSerivce(serviceName);
-        Method m = ServiceMapper.getMethod(serviceName, method);
+    private Object invoke0(String serviceName, String version, String method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+        Object service = ServiceMapper.getSerivce(serviceName, version);
+        Method m = ServiceMapper.getMethod(serviceName,version, method);
         if (m != null) {
             return m.invoke(service, args);
         }

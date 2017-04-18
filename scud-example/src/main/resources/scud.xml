@@ -12,9 +12,9 @@
 
     <scud:server config="serverConfig">
         <scud:providers>
-            <scud:provider interface="com.xj.scud.idl.Test" ref="testService" version="1.0.0"/>
+            <scud:provider interface="com.xj.scud.idl.Test" ref="testService" version="1.0.1"/>
         </scud:providers>
     </scud:server>
 
-    <scud:client id="client" host="127.0.0.1:7890" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true"/>
+    <scud:client id="client" host="127.0.0.1:7890" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.1"/>
 </beans>

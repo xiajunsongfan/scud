@@ -41,19 +41,9 @@ public class ScudClient<T> {
         synchronized (ScudClient.class) {
             if (client == null) {
                 RpcClientProxy proxy = new RpcClientProxy(manager);
-                this.client = (T) proxy.getProxy(this.conf.getServiceClass());
+                this.client = (T) proxy.getProxy(this.conf.getInterfaze());
             }
         }
         return this.client;
-    }
-
-    /**
-     * 异步客户端
-     * 暂未实现
-     *
-     * @return
-     */
-    public T getAsyncClient() {
-        return null;
     }
 }
