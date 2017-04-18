@@ -34,6 +34,12 @@ public class NettyServer {
         boot.channel(NioServerSocketChannel.class);
         future = boot.bind(config.getPort()).syncUninterruptibly();
         System.out.println("Server start sucess.");
+        System.out.println("********************************_**********");
+        System.out.println("*      ___    ___   _   _    __| |        *");
+        System.out.println("*     /*__|  /*__| |*| |*|  /*_`*|        *");
+        System.out.println("*     \\__*\\ |*(__  |*|_|*| |*(_|*|        *");
+        System.out.println("*     |___/  \\___|  \\__,_|  \\__,_|v(1.0.0)*");
+        System.out.println("*******************************************");
     }
 
     public static void stop() {
