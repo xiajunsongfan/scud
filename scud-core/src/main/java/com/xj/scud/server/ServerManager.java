@@ -55,7 +55,7 @@ public class ServerManager {
                     try {
                         res = invoke0(invocation.getService(), invocation.getVersion(), methodName, invocation.getArgs());
                     } catch (Exception e) {
-                        throwable = new Exception("Server exception.",e);
+                        throwable = e;
                         LOGGER.error("Invoke exception.", e);
                     }
                     if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用返回了

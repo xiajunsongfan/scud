@@ -91,7 +91,7 @@ public class ClientManager<T> {
         if (result != null) {
             Throwable exception = result.getException();
             if (exception != null) {//服务端发生异常
-                throw new Exception(exception);
+                throw new Exception("Service provider exception.",exception);
             }
             return (T) result.getValue();
         }
