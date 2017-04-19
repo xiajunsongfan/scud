@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException;
 public class ResponseFuture<T> extends RpcFuture<T> {
     private Semaphore lock = new Semaphore(0);
     private T response;
-    private boolean done = false;
+    private volatile boolean done = false;
 
     public ResponseFuture(int invokerTimeout) {
         super(System.currentTimeMillis(), invokerTimeout);

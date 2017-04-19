@@ -8,10 +8,10 @@ import com.xj.scud.network.proxy.RpcClientProxy;
  * Date: 2017/01/03 18:01
  */
 public class ScudClient<T> {
-    private T client;
+    private volatile T client;
     private ClientConfig conf;
     private ProtocolProcesser processer;
-    private ClientManager manager;
+    private volatile ClientManager manager;
 
     public ScudClient(ClientConfig conf) {
         this.conf = conf;

@@ -75,7 +75,7 @@ public class ClientManager<T> {
      * @throws Exception e
      */
     public T invoke(String serviceName, Method method, Object[] args) throws Exception {
-        int seq = seqCount.incrementAndGet();
+        int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
@@ -91,7 +91,7 @@ public class ClientManager<T> {
         if (result != null) {
             Throwable exception = result.getException();
             if (exception != null) {//服务端发生异常
-                throw new Exception("Service provider exception.",exception);
+                throw new Exception("Service provider exception.", exception);
             }
             return (T) result.getValue();
         }
@@ -108,7 +108,7 @@ public class ClientManager<T> {
      */
     public RpcFuture<T> asyncFutureInvoke(String serviceName, Method method, Object[] args) throws Exception {
         int seq = createdPackageId();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName,this.config.getVersion(), method, args, seq);
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
@@ -124,8 +124,8 @@ public class ClientManager<T> {
      * @throws Exception e
      */
     public void asyncCallbackInvoke(String serviceName, Method method, Object[] args, RpcCallback callback) throws Exception {
-        int seq = seqCount.incrementAndGet();
-        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName,this.config.getVersion(), method, args, seq);
+        int seq = createdPackageId();
+        NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback, config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
