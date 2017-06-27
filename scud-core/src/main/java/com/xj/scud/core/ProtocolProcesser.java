@@ -1,7 +1,7 @@
 package com.xj.scud.core;
 
 import com.xj.scud.clent.ClientConfig;
-import com.xj.scud.network.SerializableHandler;
+import com.xj.scud.core.network.SerializableHandler;
 
 import java.lang.reflect.Method;
 

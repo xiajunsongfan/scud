@@ -1,4 +1,4 @@
-package com.xj.scud.network.netty;
+package com.xj.scud.core.network.netty;
 
 import com.xj.scud.core.NetworkProtocol;
 import io.netty.channel.ChannelHandlerContext;

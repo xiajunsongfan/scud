@@ -1,7 +1,7 @@
 package com.xj.scud.server;
 
 import com.xj.scud.core.*;
-import com.xj.scud.network.SerializableHandler;
+import com.xj.scud.core.network.SerializableHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;

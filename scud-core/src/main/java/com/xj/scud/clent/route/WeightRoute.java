@@ -1,4 +1,4 @@
-package com.xj.scud.route;
+package com.xj.scud.clent.route;
 
 import com.xj.scud.commons.MurmurHash;
 import io.netty.channel.Channel;

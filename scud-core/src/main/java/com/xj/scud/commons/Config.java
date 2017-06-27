@@ -20,7 +20,7 @@ public class Config {
         prop = new Properties();
 
         try {
-            is = Config.class.getClassLoader().getResourceAsStream("system.properties");
+            is = Config.class.getClassLoader().getResourceAsStream("scud.properties");
             prop.load(is);
         } catch (Exception var4) {
             if (is != null) {

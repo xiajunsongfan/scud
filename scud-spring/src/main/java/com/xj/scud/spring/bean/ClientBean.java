@@ -2,9 +2,8 @@ package com.xj.scud.spring.bean;
 
 import com.xj.scud.clent.ClientConfig;
 import com.xj.scud.clent.ScudClient;
-import com.xj.scud.clent.ScudClientFactory;
-import com.xj.scud.network.SerializableEnum;
-import com.xj.scud.route.RouteEnum;
+import com.xj.scud.core.network.SerializableEnum;
+import com.xj.scud.clent.route.RouteEnum;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 

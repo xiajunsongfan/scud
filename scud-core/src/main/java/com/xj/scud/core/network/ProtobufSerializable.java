@@ -1,11 +1,11 @@
-package com.xj.scud.network;
+package com.xj.scud.core.network;
 
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeEnv;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
-import com.xj.scud.core.RpcInvocation;
+import com.xj.scud.core.exception.SerializableException;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.slf4j.Logger;
@@ -57,13 +57,13 @@ public class ProtobufSerializable<T> implements RpcSerializable<T> {
         try {
             Schema<T> schema = getSchema(cls);
             return ProtostuffIOUtil.toByteArray(obj, schema, buffer);
-        } catch (Exception ex) {
-            LOGGER.error("Serialize error", ex);
+        } catch (Exception e) {
+            SerializableException ex = new SerializableException("Protobuf serialize error", e);
+            LOGGER.error(ex.getMessage(), ex);
+            throw ex;
         } finally {
             buffer.clear();
         }
-
-        return null;
     }
 
     /**
@@ -79,10 +79,10 @@ public class ProtobufSerializable<T> implements RpcSerializable<T> {
             Schema<T> schema = getSchema(cls);
             ProtostuffIOUtil.mergeFrom(data, obj, schema);
             return obj;
-        } catch (Exception ex) {
-            LOGGER.error("Deserialize error", ex);
-
+        } catch (Exception e) {
+            SerializableException ex = new SerializableException("Protobuf deserialize error", e);
+            LOGGER.error("Protobuf deserialize error", ex);
+            throw ex;
         }
-        return null;
     }
 }

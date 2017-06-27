@@ -1,9 +1,9 @@
-package com.xj.scud.network.netty;
+package com.xj.scud.core.network.netty;
 
 import com.xj.scud.core.MessageManager;
 import com.xj.scud.core.NetworkProtocol;
 import com.xj.scud.core.RpcResult;
-import com.xj.scud.network.SerializableHandler;
+import com.xj.scud.core.network.SerializableHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;

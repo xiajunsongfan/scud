@@ -1,9 +1,12 @@
-package com.xj.scud.network;
+package com.xj.scud.core.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.xj.scud.core.exception.SerializableException;
 import de.javakaffee.kryoserializers.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -16,6 +19,7 @@ import java.util.UUID;
  * Date: 2017/01/03 16:01
  */
 public class KryoSerializable<T> implements RpcSerializable<T> {
+    private final static Logger LOGGER = LoggerFactory.getLogger(KryoSerializable.class);
     private final static RpcSerializable SERIALIZABLE = new KryoSerializable();
 
     private KryoSerializable() {
@@ -46,15 +50,27 @@ public class KryoSerializable<T> implements RpcSerializable<T> {
 
     @Override
     public T decode(byte[] value, Class clazz) {
-        Input in = new Input(value.length);
-        in.setBuffer(value);
-        return (T) this.kryoHolder.get().readClassAndObject(in);
+        try {
+            Input in = new Input(value.length);
+            in.setBuffer(value);
+            return (T) this.kryoHolder.get().readClassAndObject(in);
+        } catch (Exception e) {
+            SerializableException ex = new SerializableException("Kryo deserialize error", e);
+            LOGGER.error(ex.getMessage(), ex);
+            throw ex;
+        }
     }
 
     @Override
     public byte[] encode(T value) {
         Output output = new Output(128, 10 * 1024 * 1024);
-        this.kryoHolder.get().writeClassAndObject(output, value);
-        return output.getBuffer();
+        try {
+            this.kryoHolder.get().writeClassAndObject(output, value);
+            return output.getBuffer();
+        } catch (Exception e) {
+            SerializableException ex = new SerializableException("Kryo serialize error", e);
+            LOGGER.error(ex.getMessage(), ex);
+            throw ex;
+        }
     }
 }

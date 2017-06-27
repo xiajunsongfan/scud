@@ -7,8 +7,8 @@ import com.xj.scud.core.RpcCallback;
 import com.xj.scud.core.RpcContext;
 import com.xj.scud.idl.Test;
 import com.xj.scud.idl.User;
-import com.xj.scud.network.SerializableEnum;
-import com.xj.scud.route.RouteEnum;
+import com.xj.scud.core.network.SerializableEnum;
+import com.xj.scud.clent.route.RouteEnum;
 
 import java.util.concurrent.Future;
 

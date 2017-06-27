@@ -1,11 +1,8 @@
-package com.xj.scud.route;
+package com.xj.scud.clent.route;
 
 import io.netty.channel.Channel;
 
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Author: xiajun

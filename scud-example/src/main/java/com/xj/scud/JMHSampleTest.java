@@ -1,8 +1,8 @@
 package com.xj.scud;
 
 import com.xj.scud.core.RpcResult;
-import com.xj.scud.network.ProtobufSerializable;
-import com.xj.scud.network.RpcSerializable;
+import com.xj.scud.core.network.ProtobufSerializable;
+import com.xj.scud.core.network.RpcSerializable;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;

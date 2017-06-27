@@ -1,6 +1,6 @@
 package com.xj.scud.server;
 
-import com.xj.scud.network.netty.NettyServer;
+import com.xj.scud.core.network.netty.NettyServer;
 import com.xj.scud.core.ServiceMapper;
 import io.netty.util.concurrent.DefaultThreadFactory;
 

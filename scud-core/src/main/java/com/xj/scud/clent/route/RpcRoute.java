@@ -1,4 +1,4 @@
-package com.xj.scud.route;
+package com.xj.scud.clent.route;
 
 import io.netty.channel.Channel;
 

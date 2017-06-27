@@ -1,7 +1,7 @@
 package com.xj.scud.clent;
 
 import com.xj.scud.core.ProtocolProcesser;
-import com.xj.scud.network.proxy.RpcClientProxy;
+import com.xj.scud.core.network.proxy.RpcClientProxy;
 
 /**
  * Author: xiajun

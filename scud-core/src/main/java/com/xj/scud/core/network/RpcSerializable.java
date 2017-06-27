@@ -1,4 +1,4 @@
-package com.xj.scud.network;
+package com.xj.scud.core.network;
 
 /**
  * Author: xiajun

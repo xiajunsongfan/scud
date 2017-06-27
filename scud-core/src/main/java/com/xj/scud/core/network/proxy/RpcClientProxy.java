@@ -1,4 +1,4 @@
-package com.xj.scud.network.proxy;
+package com.xj.scud.core.network.proxy;
 
 import com.xj.scud.clent.ClientManager;
 import com.xj.scud.core.RpcContext;

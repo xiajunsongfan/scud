@@ -1,7 +1,7 @@
 package com.xj.scud.clent;
 
-import com.xj.scud.network.SerializableEnum;
-import com.xj.scud.route.RouteEnum;
+import com.xj.scud.core.network.SerializableEnum;
+import com.xj.scud.clent.route.RouteEnum;
 
 /**
  * Author: xiajun
