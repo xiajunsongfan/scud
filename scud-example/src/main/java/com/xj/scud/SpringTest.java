@@ -12,11 +12,12 @@ public class SpringTest {
 
 
     public static void init() {
-        context = new ClassPathXmlApplicationContext("classpath:scud.xml");
+        //context = new ClassPathXmlApplicationContext("classpath:scud.xml");//非注解调用
+        context = new ClassPathXmlApplicationContext("classpath:scud_annotation.xml");//注解使用方式
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         init();
         Test t = (Test) context.getBean("client");
         System.out.println(t.test("34556"));

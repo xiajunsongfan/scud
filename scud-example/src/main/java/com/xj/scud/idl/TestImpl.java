@@ -1,5 +1,7 @@
 package com.xj.scud.idl;
 
+import com.xj.scud.annotation.Scud;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import java.util.List;
  * Author: xiajun
  * Date: 2017/01/03 14:45
  */
+@Scud(version = "1.0.0")
 public class TestImpl implements Test {
     public String test2() {
         return "hello test";

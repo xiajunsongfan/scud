@@ -10,7 +10,7 @@ import com.xj.scud.clent.route.RouteEnum;
 public class ClientConfig<T> {
     private String host;
     private int connectTimeout;
-    private int timeout = 1000;
+    private int timeout = 1000;//调用RPC超时
     private Class<T> interfaze;//服务接口类
     private String version;//服务版本
     private SerializableEnum type = SerializableEnum.PROTOBUF;//序列化方式

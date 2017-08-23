@@ -14,9 +14,8 @@ scud 基于netty4开发的一个单机版的RPC服务
 ```
 
 ```java
+    在项目类路径添加 scud.properties配置
     /** server 端 **/
-     ServerConfig conf = new ServerConfig();
-     conf.setPort(7890).setCorePoolSize(12);
      Provider<Test> provider = new Provider<>(Test.class, new TestImpl(), "1.0.1");
      ScudServer server = new ScudServer(conf, provider);
      server.start();
@@ -61,7 +60,7 @@ scud 基于netty4开发的一个单机版的RPC服务
         }
     });
 
-    /** spring使用方式 **/
+    /** spring两种使用方式  非注解使用**/
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -72,9 +71,7 @@ scud 基于netty4开发的一个单机版的RPC服务
 
         <bean id="testService" class="com.xj.scud.idl.TestImpl"/>
 
-        <scud:serverConfig id="serverConfig" port="7890"  nettyWorkPooleSize="2" corePoolSize="4"/>
-
-        <scud:server config="serverConfig">
+        <scud:server>
             <scud:providers>
                 <scud:provider interface="com.xj.scud.idl.Test" ref="testService" version="1.0.1"/>
             </scud:providers>
@@ -82,6 +79,24 @@ scud 基于netty4开发的一个单机版的RPC服务
 
         <scud:client id="client" host="127.0.0.1:7890" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.1"/>
     </beans>
+
+    /** 注解使用**/
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:scud="http://www.xj.com/schema/scud"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.xj.com/schema/scud http://www.xj.com/schema/scud/scud.xsd">
+
+        <context:component-scan base-package="com.xj.scud.idl"/> <!--扫描注解类所在包路径 -->
+
+        <bean id="serviceScanner" class="com.xj.scud.scan.ScudServiceScanner"/>
+        <scud:client id="client" host="127.0.0.1:6155" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.0"/>
+    </beans>
+    实现类需要打上注解
+    @Scud(version = "1.0.0")
+    public class TestImpl implements Test {}
 
     例子可以参考scud-example
 

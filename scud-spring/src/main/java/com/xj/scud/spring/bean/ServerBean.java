@@ -17,16 +17,7 @@ import java.util.List;
  */
 public class ServerBean implements InitializingBean, ApplicationListener<ContextRefreshedEvent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(ServerBean.class);
-    private ServerConfigBean config;
     private List<ProviderBean> providers;
-
-    public ServerConfigBean getConfig() {
-        return config;
-    }
-
-    public void setConfig(ServerConfigBean config) {
-        this.config = config;
-    }
 
     public List<ProviderBean> getProviders() {
         return providers;
@@ -45,27 +36,12 @@ public class ServerBean implements InitializingBean, ApplicationListener<Context
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        LOGGER.info("Server conf:{}", this.config);
-        ServerConfig conf = new ServerConfig();
-        if (this.config.getHost() != null && !"".equals(this.config.getHost())) {
-            conf.setIp(this.config.getHost());
-        }
         Provider[] provs = new Provider[providers.size()];
         for (int i = 0; i < providers.size(); i++) {
             ProviderBean providerBean = providers.get(i);
             provs[i] = new Provider(providerBean.getInterfaze(), providerBean.getRef(), providerBean.getVersion());
         }
-        if (config.getConnentTimeout() > 0) {
-            conf.setConnentTimeout(config.getConnentTimeout());
-        }
-        if (config.getCorePoolSize() > 0) {
-            conf.setCorePoolSize(config.getCorePoolSize());
-        }
-        if (config.getNettyWorkPooleSize() > 0) {
-            conf.setNettyWorkPooleSize(config.getNettyWorkPooleSize());
-        }
-        conf.setPort(config.getPort());
-        ScudServer server = new ScudServer(conf, provs);
+        ScudServer server = new ScudServer(provs);
         server.start();
     }
 }

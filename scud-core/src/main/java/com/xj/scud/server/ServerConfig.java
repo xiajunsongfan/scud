@@ -4,12 +4,12 @@ package com.xj.scud.server;
  * Author: baichuan - xiajun
  * Date: 2017/01/04 10:56
  */
-public class ServerConfig<T> {
+public class ServerConfig {
     private String ip = "0.0.0.0";
     private int port;//服务端口
     private int corePoolSize = 8;//服务work线程数
     private int nettyWorkPooleSize = 2;//netty work线程数
-    private int connentTimeout;//连接超时时间 毫秒
+    private int connectTimeout;//连接超时时间 毫秒
 
     public String getIp() {
         return ip;
@@ -47,12 +47,23 @@ public class ServerConfig<T> {
         return this;
     }
 
-    public int getConnentTimeout() {
-        return connentTimeout;
+    public int getConnectTimeout() {
+        return connectTimeout;
     }
 
-    public ServerConfig setConnentTimeout(int connentTimeout) {
-        this.connentTimeout = connentTimeout;
+    public ServerConfig setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "ServerConfig{" +
+                "ip='" + ip + '\'' +
+                ", port=" + port +
+                ", corePoolSize=" + corePoolSize +
+                ", nettyWorkPooleSize=" + nettyWorkPooleSize +
+                ", connectTimeout=" + connectTimeout +
+                '}';
     }
 }

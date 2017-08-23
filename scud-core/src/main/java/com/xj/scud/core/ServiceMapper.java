@@ -1,6 +1,9 @@
 package com.xj.scud.core;
 
+import com.xj.scud.core.exception.ScudExecption;
 import com.xj.scud.server.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ import java.util.Map;
  * 服务接口方法映射
  */
 public class ServiceMapper {
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceMapper.class);
     private static Map<String, Map<String, Method>> serviceMethodMap;
     private static Map<String, Object> servicesMap;
 
@@ -35,6 +39,7 @@ public class ServiceMapper {
                 methodMap.put(ProtocolProcesser.buildMethodName(method), method);
             }
             servicesMap.put(serviceName, provider.getService());
+            LOGGER.info("Provider info interfaze:{}.", serviceName);
         }
     }
 
@@ -62,12 +67,15 @@ public class ServiceMapper {
     public static Object getSerivce(String service, String version) {
         Object obj = servicesMap.get(buildServiceName(service, version));
         if (obj == null) {
-            throw new NullPointerException("Not foud service:" + service + " version:" + version);
+            throw new ScudExecption("Not foud service:" + service + " version:" + version);
         }
         return obj;
     }
 
     private static String buildServiceName(String service, String version) {
+        if (version == null || "".equals(version.trim())) {
+            return service;
+        }
         return service + ":" + version;
     }
 }

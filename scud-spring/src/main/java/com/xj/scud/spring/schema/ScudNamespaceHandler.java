@@ -9,7 +9,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class ScudNamespaceHandler extends NamespaceHandlerSupport {
     @Override
     public void init() {
-        registerBeanDefinitionParser("serverConfig", new ScudServerConfigParser());
+        //registerBeanDefinitionParser("serverConfig", new ScudServerConfigParser());
         registerBeanDefinitionParser("provider", new ScudProviderParser());
         registerBeanDefinitionParser("server", new ServerParser());
         registerBeanDefinitionParser("client", new ClientParser());

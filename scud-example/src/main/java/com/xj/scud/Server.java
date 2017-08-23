@@ -12,10 +12,8 @@ import com.xj.scud.server.ServerConfig;
  */
 public class Server {
     public static void main(String[] args) {
-        ServerConfig conf = new ServerConfig();
-        conf.setPort(7890).setCorePoolSize(12);
         Provider<Test> provider = new Provider<>(Test.class, new TestImpl(), "1.0.1");
-        ScudServer server = new ScudServer(conf, provider);
+        ScudServer server = new ScudServer(provider);
         server.start();
     }
 }

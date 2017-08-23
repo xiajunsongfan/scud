@@ -10,7 +10,7 @@
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
     <xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool.xsd"/>
 
-    <xsd:complexType name="serverConfig">
+    <!--xsd:complexType name="serverConfig">
         <xsd:attribute name="id" type="xsd:ID" use="required">
             <xsd:annotation>
                 <xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
@@ -41,7 +41,7 @@
                 <xsd:documentation><![CDATA[The server response timeout. default: 1000ms]]></xsd:documentation>
             </xsd:annotation>
         </xsd:attribute>
-    </xsd:complexType>
+    </xsd:complexType-->
 
     <xsd:complexType name="serverBean">
         <xsd:sequence>
@@ -52,7 +52,7 @@
                 <xsd:documentation><![CDATA[ server beans not need to inject. ]]></xsd:documentation>
             </xsd:annotation>
         </xsd:attribute>
-        <xsd:attribute name="config" type="xsd:string" use="required"></xsd:attribute>
+        <!--xsd:attribute name="config" type="xsd:string" use="required"></xsd:attribute-->
 
     </xsd:complexType>
 
@@ -151,6 +151,6 @@
     </xsd:complexType>
 
     <xsd:element name="server" type="serverBean"/>
-    <xsd:element name="serverConfig" type="serverConfig"/>
+    <!--xsd:element name="serverConfig" type="serverConfig"/-->
     <xsd:element name="client" type="clientBean"/>
 </xsd:schema>

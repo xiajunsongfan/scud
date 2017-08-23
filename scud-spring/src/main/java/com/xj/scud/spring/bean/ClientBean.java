@@ -14,7 +14,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class ClientBean<T> implements FactoryBean, InitializingBean {
     private String host;
     private Class interfaceClass;
-    private String version="1.0";
+    private String version;
     private int timeout;
     private int workThreadSize;
     private int connentTimeout;

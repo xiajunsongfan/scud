@@ -19,8 +19,8 @@ import java.util.List;
 public class ServerParser extends AbstractSingleBeanDefinitionParser {
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
-        String config = element.getAttribute("config");
-        builder.addPropertyValue("config", new RuntimeBeanReference(config));
+        //String config = element.getAttribute("config");
+        //builder.addPropertyValue("config", new RuntimeBeanReference(config));
         List<BeanDefinition> interceptorsBeans = parseInterceptorElements(element, parserContext, builder);
         if (interceptorsBeans != null && interceptorsBeans.size() > 0) {
             builder.addPropertyValue("providers", interceptorsBeans);

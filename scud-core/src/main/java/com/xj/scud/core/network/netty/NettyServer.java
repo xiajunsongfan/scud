@@ -26,7 +26,7 @@ public class NettyServer {
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(bossGroup, workerGroup)
                 .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnentTimeout())
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeout())
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(64, 1024, 65536))
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
