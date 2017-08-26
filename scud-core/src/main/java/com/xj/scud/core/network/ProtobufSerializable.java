@@ -30,9 +30,9 @@ public class ProtobufSerializable<T> implements RpcSerializable<T> {
 
     private static <T> Schema<T> getSchema(Class<T> cls) {
         Schema<T> schema = (Schema<T>) cacheSchama.get(cls);
-        if (null == schema) {
+        if (schema == null) {
             synchronized (ProtobufSerializable.class) {
-                if (null == cacheSchama.get(cls)) {
+                if ((schema = (Schema<T>) cacheSchama.get(cls)) == null) {
                     schema = RuntimeSchema.createFrom(cls, new HashSet<>(16), RuntimeEnv.ID_STRATEGY);
                     cacheSchama.put(cls, schema);
                 }

@@ -3,6 +3,7 @@ package com.xj.scud;
 import com.xj.scud.core.RpcResult;
 import com.xj.scud.core.network.ProtobufSerializable;
 import com.xj.scud.core.network.RpcSerializable;
+import com.xj.scud.monitor.PerformanceData;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -12,6 +13,7 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -26,14 +28,18 @@ public class JMHSampleTest {
     public RpcSerializable serializable = ProtobufSerializable.newInstance();
     protected ReadWriteLock lock = new ReentrantReadWriteLock();
     public String[] data = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-    public Map<String,String> list = new ConcurrentHashMap<>();
-    public JMHSampleTest(){
-        list.put("12","1");
-        list.put("32","2");
-        list.put("35","3");
-        list.put("sfs","4");
-        list.put("346s","5");
+    public Map<String, String> list = new ConcurrentHashMap<>();
+    public PerformanceData pdata = new PerformanceData("test");
+    Random random = new Random();
+
+    public JMHSampleTest() {
+        list.put("12", "1");
+        list.put("32", "2");
+        list.put("35", "3");
+        list.put("sfs", "4");
+        list.put("346s", "5");
     }
+
     //@Benchmark
     public void serializable() {
         //RpcSerializable serializable = ProtobufSerializable.newInstance();
@@ -45,9 +51,10 @@ public class JMHSampleTest {
 
     @Benchmark
     public void lock() {
-        //lock.readLock().lock();
-        String s = list.get("35");
-        //lock.readLock().unlock();
+        pdata.add(random.nextInt(30000));
+        if (pdata.getSize() > 180000) {
+            pdata = new PerformanceData("test");
+        }
     }
 
 

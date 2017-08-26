@@ -1,7 +1,9 @@
 package com.xj.scud.server;
 
+import com.xj.scud.commons.Config;
 import com.xj.scud.core.*;
 import com.xj.scud.core.network.SerializableHandler;
+import com.xj.scud.monitor.PerformanceMonitor;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -45,10 +47,11 @@ public class ServerManager {
         this.executor.submit(new Runnable() {
             @Override
             public void run() {
+                long startTime = System.currentTimeMillis();
                 RpcInvocation invocation = SerializableHandler.requestDecode(protocol);
                 long reqTime = invocation.getRequestTime();
                 int timeout = invocation.getRequestTimeout();
-                if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用执行了
+                if (startTime - reqTime < timeout) {//超时的任务就不用执行了
                     String methodName = ProtocolProcesser.buildMethodName(invocation.getMethod(), invocation.getArgTypes());
                     Object res = null;
                     Throwable throwable = null;
@@ -58,13 +61,13 @@ public class ServerManager {
                         throwable = e;
                         LOGGER.error("Invoke exception.", e);
                     }
-                    if (System.currentTimeMillis() - reqTime < timeout) {//超时的任务就不用返回了
+                    if (startTime - reqTime < timeout) {//超时的任务就不用返回了
                         try {
                             RpcResult result = buildRpcResult(200, throwable, res);
                             NetworkProtocol responseProtocol = protocolProcesser.buildResponseProtocol(protocol, result);
                             ChannelFuture channelFuture = ctx.writeAndFlush(responseProtocol);
+                            monitor(invocation.getMethod(), (int) (System.currentTimeMillis() - startTime));
                             if (LOGGER.isDebugEnabled()) {
-                                final long startTime = System.currentTimeMillis();
                                 channelFuture.addListeners(new ChannelFutureListener() {
                                     @Override
                                     public void operationComplete(ChannelFuture future) throws Exception {
@@ -92,7 +95,7 @@ public class ServerManager {
      */
     private Object invoke0(String serviceName, String version, String method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         Object service = ServiceMapper.getSerivce(serviceName, version);
-        Method m = ServiceMapper.getMethod(serviceName,version, method);
+        Method m = ServiceMapper.getMethod(serviceName, version, method);
         if (m != null) {
             return m.invoke(service, args);
         }
@@ -106,5 +109,11 @@ public class ServerManager {
         rpcResult.setStatus(status);
         rpcResult.setValue(res);
         return rpcResult;
+    }
+
+    private void monitor(String methodName, int costTime) {
+        if (Config.METHOD_MONITOR) {
+            PerformanceMonitor.add(methodName, costTime);
+        }
     }
 }

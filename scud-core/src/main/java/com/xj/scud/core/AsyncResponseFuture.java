@@ -8,21 +8,21 @@ import java.util.concurrent.TimeoutException;
  * Author: xiajun
  * Date: 2017/01/20 12:00
  */
-public class ResultFuture<T> extends ResponseFuture<T> {
+public class AsyncResponseFuture<T> extends ResponseFuture<T> {
     private RpcFuture<RpcResult> future;
     private int packageId;
 
-    public ResultFuture(RpcFuture<RpcResult> future, int packageId) {
+    public AsyncResponseFuture(RpcFuture<RpcResult> future, int packageId) {
         super(future.invokerTimeout);
         this.future = future;
         this.packageId = packageId;
     }
 
-    public ResultFuture(int invokerTimeout) {
+    public AsyncResponseFuture(int invokerTimeout) {
         super(invokerTimeout);
     }
 
-    public ResultFuture() {
+    public AsyncResponseFuture() {
         this(0);
     }
 
@@ -31,8 +31,8 @@ public class ResultFuture<T> extends ResponseFuture<T> {
         if (future == null) {
             throw new NullPointerException("Future is null");
         }
-        if (future instanceof ResultFuture) {
-            ResultFuture r = (ResultFuture) future;
+        if (future instanceof AsyncResponseFuture) {
+            AsyncResponseFuture r = (AsyncResponseFuture) future;
             this.future = r.future;
             this.packageId = r.packageId;
         } else {

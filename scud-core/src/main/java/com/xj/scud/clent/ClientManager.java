@@ -78,6 +78,7 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
+        rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
         RpcResult result = null;
@@ -87,6 +88,7 @@ public class ClientManager<T> {
             if (result == null) {//客户端超时
                 MessageManager.remove(protocol.getSequence());
             }
+            rpcFuture.monitor();
         }
         if (result != null) {
             Throwable exception = result.getException();
@@ -110,9 +112,10 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
+        rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
-        return new ResultFuture<>(rpcFuture, seq);
+        return new AsyncResponseFuture<>(rpcFuture, seq);
     }
 
     /**
@@ -126,7 +129,8 @@ public class ClientManager<T> {
     public void asyncCallbackInvoke(String serviceName, Method method, Object[] args, RpcCallback callback) throws Exception {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
-        RpcFuture<RpcResult> rpcFuture = new ResponseCallback(callback, config.getTimeout());
+        RpcFuture<RpcResult> rpcFuture = new AsyncResponseCallback(callback, config.getTimeout());
+        rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(), protocol, seq);
     }

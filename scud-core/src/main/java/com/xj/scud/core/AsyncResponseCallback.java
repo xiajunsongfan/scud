@@ -9,16 +9,16 @@ import java.util.concurrent.TimeoutException;
  * Date: 2017/01/20 10:50
  * 回调函数，注意需要定时清理服务端没有响应的请求
  */
-public class ResponseCallback extends RpcFuture<RpcResult> {
+public class AsyncResponseCallback extends RpcFuture<RpcResult> {
     private RpcCallback callback;
     private boolean done = false;
 
-    public ResponseCallback(RpcCallback callback, int invokerTimeout) {
+    public AsyncResponseCallback(RpcCallback callback, int invokerTimeout) {
         super(System.currentTimeMillis(), invokerTimeout);
         this.callback = callback;
     }
 
-    public ResponseCallback(int invokerTimeout) {
+    public AsyncResponseCallback(int invokerTimeout) {
         super(System.currentTimeMillis(), invokerTimeout);
     }
 
@@ -31,6 +31,7 @@ public class ResponseCallback extends RpcFuture<RpcResult> {
         } else {
             callback.success(response.getValue());
         }
+        this.monitor();
     }
 
     @Override

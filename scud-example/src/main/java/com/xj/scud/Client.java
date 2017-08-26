@@ -21,13 +21,21 @@ public class Client {
         final ClientConfig<Test> conf = new ClientConfig();
         conf.setHost("127.0.0.1:6155").setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
         final Test t = ScudClientFactory.getServiceConsumer(conf);
+        for (int i = 0; ; i++) {
+            User u = t.test("" + i);
+            //System.out.println(u.toString());
+            if (!u.getName().equals(i + "")) {
+                throw new RuntimeException("iiiii");
+            }
+        }
 
-        /** 同步阻塞模式 **/
+
+   /*     * 同步阻塞模式 *
         Long stime = System.currentTimeMillis();
         String u = t.test2();
         System.out.println(u.toString() + " cost: " + (System.currentTimeMillis() - stime) + "ms");
 
-        /** 异步Future模式 **/
+        * 异步Future模式 *
         Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
             @Override
             public void prepare() {
@@ -36,7 +44,7 @@ public class Client {
         });
         System.out.println(f.get());
 
-        /** 异步Callback模式 **/
+        * 异步Callback模式 *
         RpcContext.invokeWithCallback(new AsyncPrepare() {
             @Override
             public void prepare() {
@@ -52,6 +60,6 @@ public class Client {
             public void fail(Throwable error) {
                 error.printStackTrace();
             }
-        });
+        });*/
     }
 }

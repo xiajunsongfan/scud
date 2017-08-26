@@ -47,7 +47,7 @@ public class ResponseFuture<T> extends RpcFuture<T> {
         if (!isDone()) {
             boolean done = lock.tryAcquire(timeout, unit);
             if (!done) {
-                throw new TimeoutException("Waiting response timeout! timeout="+timeout+"ms");
+                throw new TimeoutException("Waiting response timeout! timeout=" + timeout + "ms");
             }
         }
         return this.response;

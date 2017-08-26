@@ -1,5 +1,8 @@
 package com.xj.scud.core;
 
+import com.xj.scud.commons.Config;
+import com.xj.scud.monitor.PerformanceMonitor;
+
 import java.util.concurrent.Future;
 
 /**
@@ -9,6 +12,8 @@ import java.util.concurrent.Future;
 public abstract class RpcFuture<T> implements Future<T> {
     protected long sendTime = 0;//发送的时间
     protected int invokerTimeout = 0;//调用超时
+    protected String serviceName;
+    private String methodName;
 
     public RpcFuture(long sendTime, int invokerTimeout) {
         this.sendTime = sendTime;
@@ -29,11 +34,30 @@ public abstract class RpcFuture<T> implements Future<T> {
      */
     public abstract void copyFuture(RpcFuture<T> future);
 
+    /**
+     * 监控方法
+     */
+    public void monitor() {
+        if (Config.METHOD_MONITOR && methodName != null) {
+            PerformanceMonitor.add(methodName, (int) (System.currentTimeMillis() - sendTime));
+        }
+    }
+
     public long getSendTime() {
         return sendTime;
     }
 
     public int getInvokerTimeout() {
         return invokerTimeout;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public void setMethodName(String methodName) {
+        if (Config.METHOD_MONITOR) {
+            this.methodName = methodName;
+        }
     }
 }

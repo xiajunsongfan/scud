@@ -47,7 +47,7 @@ public class RpcContext {
         RpcContext rpcContext = LOCAL.get();
         try {
             rpcContext.isFutureInvoke = true;
-            rpcContext.future = new ResultFuture<>();
+            rpcContext.future = new AsyncResponseFuture<>();
             prepare.prepare();
             return rpcContext.future;
         } finally {

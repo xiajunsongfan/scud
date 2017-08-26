@@ -1,5 +1,6 @@
 package com.xj.scud.commons;
 
+import com.xj.scud.monitor.MonitorReport;
 import com.xj.scud.server.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.util.*;
 public class Config {
     private final static Logger LOGGER = LoggerFactory.getLogger(Config.class);
     private static Properties prop;
+    public static boolean METHOD_MONITOR = false;//是否对方法进行性能监控
 
     static {
         init();
@@ -43,6 +45,9 @@ public class Config {
             LOGGER.info("Use scud.properties files in classpath:{}", urls.get(0).toString());
             is = urls.get(0).openStream();
             prop.load(is);
+            METHOD_MONITOR = "true".equalsIgnoreCase(prop.getProperty("method.performance.monitor", "false"));
+            LOGGER.info("Method performance monitor status {}.", METHOD_MONITOR ? "on" : "off");
+            MonitorReport.init();
         } catch (Exception var4) {
             if (is != null) {
                 try {

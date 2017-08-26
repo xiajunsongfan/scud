@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Author: xiajun
@@ -53,7 +54,10 @@ public class MessageManager {
                 Iterator<Map.Entry<Integer, RpcFuture>> it = msgManager.entrySet().iterator();
                 while (it.hasNext()) {
                     RpcFuture rpcFuture = it.next().getValue();
-                    if (rpcFuture.getInvokerTimeout() > 0 && System.currentTimeMillis() - rpcFuture.sendTime > rpcFuture.getInvokerTimeout()) {
+                    if (rpcFuture.getInvokerTimeout() > 0 && (System.currentTimeMillis() - rpcFuture.sendTime - 1000) > rpcFuture.getInvokerTimeout()) {
+                        RpcResult response = new RpcResult();
+                        response.setException(new TimeoutException("time out."));
+                        rpcFuture.responseReceived(response);
                         it.remove();
                     }
                 }
