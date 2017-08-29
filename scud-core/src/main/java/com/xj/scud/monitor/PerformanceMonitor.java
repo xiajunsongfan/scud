@@ -1,7 +1,5 @@
 package com.xj.scud.monitor;
 
-import com.xj.scud.commons.Config;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

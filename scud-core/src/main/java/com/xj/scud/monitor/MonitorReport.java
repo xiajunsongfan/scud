@@ -28,9 +28,8 @@ public class MonitorReport {
                 public void run() {
                     Map<String, PerformanceData.TopPercentile> report = PerformanceMonitor.monitor();
                     for (Map.Entry<String, PerformanceData.TopPercentile> entry : report.entrySet()) {
-                        String key = entry.getKey();
                         PerformanceData.TopPercentile tp = entry.getValue();
-                        LOGGER.info("method:" + key + "(): tp50=" + tp.getTp50() + "ms, tp90=" + tp.getTp90() + "ms, tp99=" + tp.getTp99() + "ms, tp999=" + tp.getTp999() + "ms, min=" + tp.getMin() + "ms, max=" + tp.getMax() + "ms, count=" + tp.getCount());
+                        LOGGER.info(tp.toString());
                     }
                 }
             }, initDelay + 60, 60, TimeUnit.SECONDS);
