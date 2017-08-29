@@ -38,6 +38,10 @@ public class JMHSampleTest {
         list.put("35", "3");
         list.put("sfs", "4");
         list.put("346s", "5");
+        for (int i = 0; i < 180000; i++) {
+            pdata.add(random.nextInt(10000));
+        }
+        System.out.println("===================");
     }
 
     //@Benchmark
@@ -51,10 +55,11 @@ public class JMHSampleTest {
 
     @Benchmark
     public void lock() {
-        pdata.add(random.nextInt(30000));
+        /*pdata.add(random.nextInt(30000));
         if (pdata.getSize() > 180000) {
             pdata = new PerformanceData("test");
-        }
+        }*/
+        pdata.getTP();
     }
 
 
