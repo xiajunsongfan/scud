@@ -1,6 +1,7 @@
 package com.xj.scud.server;
 
 import com.xj.scud.commons.Config;
+import com.xj.scud.commons.NetworkUtil;
 import com.xj.scud.core.ServiceMapper;
 import com.xj.scud.core.network.netty.NettyServer;
 import com.xj.zk.ZkClient;
@@ -39,9 +40,30 @@ public class ScudServer {
             ServerManager manager = new ServerManager(config, executor);
             NettyServer.start(this.config, manager);
             ServiceMapper.createZkNode(this.providers, this.zkClient, this.config.getPort());
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {//系统停止时服务关闭
+                @Override
+                public void run() {
+                    stop();
+                }
+            }));
             LOGGER.info("Scud server start config info:{}", config.toString());
         } else {
             throw new RuntimeException("Scud server cannot start multiple times.");
         }
+    }
+
+    public void stop() {
+        try {
+            for (Provider provider : providers) {
+                if (zkClient != null && zkClient.isConnection()) {
+                    String path = Config.DNS_PREFIX + provider.getInterfaze().getName() + "/" + provider.getVersion() + "/" + NetworkUtil.getAddress() + ":" + config.getPort();
+                    zkClient.delete(path);
+                }
+            }
+            zkClient.close();
+            Thread.sleep(1000);
+        } catch (Exception e) {
+        }
+        NettyServer.stop();
     }
 }

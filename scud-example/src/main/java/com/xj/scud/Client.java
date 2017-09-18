@@ -22,9 +22,13 @@ public class Client {
         conf.setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1)
                 .setType(SerializableEnum.PROTOBUF).setUseZk(true).setZkHost("127.0.0.1:2181");
         final Test t = ScudClientFactory.getServiceConsumer(conf);
-        for (int i = 0; i < 3; i++) {
-            User u = t.test("" + i);
-            System.out.println(u.toString());
+        for (int i = 0; i < 300; i++) {
+            try {
+                User u = t.test("" + i);
+                System.out.println(u.toString());
+            }catch (Exception e){}
+            Thread.sleep(300);
+
         }
 
 

@@ -1,7 +1,7 @@
 ## scud rpc 项目
 ---
 ###项目介绍：
-scud 基于netty4开发的一个单机版的RPC服务
+scud 基于netty4开发的一个的RPC服务（集群和单机模式）
 
 
 ###使用方式：
@@ -99,5 +99,11 @@ scud 基于netty4开发的一个单机版的RPC服务
     public class TestImpl implements Test {}
 
     例子可以参考scud-example
+
+```
+###集群模式
+```
+    1. 集群使用zookeeper进行管理，zookeeper客户端使用了自己封装的 [zkclient](https://github.com/xiajunsongfan/zkclient)
+    2. 服务发布者和客户端只需要在scud.properties中配置 use.zk=true 和 zk.host 地址即可(纯java客户端模式,需要把值设置到ClientConfig中)
 
 ```
