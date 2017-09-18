@@ -49,6 +49,13 @@ public class NettyClient {
         return null;
     }
 
+    public void close(Channel channel) {
+        if (channel != null && channel.isOpen()) {
+            channel.close();
+        }
+    }
+
+
     private static int getThreadSize(int size) {
         if (size < 1) {
             size = Runtime.getRuntime().availableProcessors();

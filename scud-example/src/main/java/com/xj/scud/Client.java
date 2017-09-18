@@ -18,15 +18,13 @@ import java.util.concurrent.Future;
  */
 public class Client {
     public static void main(String[] args) throws Exception {
-        final ClientConfig<Test> conf = new ClientConfig();
-        conf.setHost("127.0.0.1:6155").setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
+        final ClientConfig conf = new ClientConfig();
+        conf.setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1)
+                .setType(SerializableEnum.PROTOBUF).setUseZk(true).setZkHost("127.0.0.1:2181");
         final Test t = ScudClientFactory.getServiceConsumer(conf);
-        for (int i = 0; ; i++) {
+        for (int i = 0; i < 3; i++) {
             User u = t.test("" + i);
-            //System.out.println(u.toString());
-            if (!u.getName().equals(i + "")) {
-                throw new RuntimeException("iiiii");
-            }
+            System.out.println(u.toString());
         }
 
 

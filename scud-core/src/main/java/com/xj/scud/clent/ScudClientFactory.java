@@ -13,7 +13,7 @@ public class ScudClientFactory {
      * @param <T> T
      * @return T
      */
-    public static <T> T getServiceConsumer(ClientConfig<T> conf) {
+    public static <T> T getServiceConsumer(ClientConfig conf) {
         ScudClient<T> client = new ScudClient<>(conf);
         client.init();
         return client.getClient();

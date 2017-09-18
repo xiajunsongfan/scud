@@ -3,6 +3,7 @@ package com.xj.scud.server;
 import com.xj.scud.commons.Config;
 import com.xj.scud.core.ServiceMapper;
 import com.xj.scud.core.network.netty.NettyServer;
+import com.xj.zk.ZkClient;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ public class ScudServer {
     private volatile static boolean isRun = false;//暂时不允许启动多个server
     private ServerConfig config;
     private Provider[] providers;
+    private ZkClient zkClient;
 
     public ScudServer(Provider... providers) {
         this.config = Config.buildServerConfig();
@@ -29,11 +31,15 @@ public class ScudServer {
     public void start() {
         if (!isRun) {
             isRun = true;
+            if (config.isUseZk()) {
+                zkClient = new ZkClient(config.getZkHost(), 2000, 5000);
+            }
             ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
             ServiceMapper.init(this.providers);
             ServerManager manager = new ServerManager(config, executor);
             NettyServer.start(this.config, manager);
-            LOGGER.info("Scud server start config info:{}",config.toString());
+            ServiceMapper.createZkNode(this.providers, this.zkClient, this.config.getPort());
+            LOGGER.info("Scud server start config info:{}", config.toString());
         } else {
             throw new RuntimeException("Scud server cannot start multiple times.");
         }

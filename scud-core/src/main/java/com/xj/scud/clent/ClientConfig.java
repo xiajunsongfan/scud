@@ -7,16 +7,18 @@ import com.xj.scud.clent.route.RouteEnum;
  * Author: xiajun
  * Date: 2017/01/03 18:10
  */
-public class ClientConfig<T> {
+public class ClientConfig {
     private String host;
     private int connectTimeout;
     private int timeout = 1000;//调用RPC超时
-    private Class<T> interfaze;//服务接口类
+    private Class interfaze;//服务接口类
     private String version;//服务版本
     private SerializableEnum type = SerializableEnum.PROTOBUF;//序列化方式
     private int workThreadSize = 4;
     private int nettyBossThreadSize = 1;
     private RouteEnum route = RouteEnum.RANDOM;//路由方式
+    private boolean useZk = false;//是否使用zookeeper进行集群管理
+    private String zkHost;//zookeeper地址
 
     public String getHost() {
         return host;
@@ -57,11 +59,11 @@ public class ClientConfig<T> {
         return this;
     }
 
-    public Class<T> getInterfaze() {
+    public Class getInterfaze() {
         return interfaze;
     }
 
-    public ClientConfig setInterfaze(Class<T> interfaze) {
+    public ClientConfig setInterfaze(Class interfaze) {
         this.interfaze = interfaze;
         return this;
     }
@@ -102,6 +104,24 @@ public class ClientConfig<T> {
 
     public ClientConfig setVersion(String version) {
         this.version = version;
+        return this;
+    }
+
+    public boolean isUseZk() {
+        return useZk;
+    }
+
+    public String getZkHost() {
+        return zkHost;
+    }
+
+    public ClientConfig setZkHost(String zkHost) {
+        this.zkHost = zkHost;
+        return this;
+    }
+
+    public ClientConfig setUseZk(boolean useZk) {
+        this.useZk = useZk;
         return this;
     }
 }

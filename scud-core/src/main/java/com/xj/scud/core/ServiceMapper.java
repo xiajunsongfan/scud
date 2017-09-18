@@ -1,11 +1,17 @@
 package com.xj.scud.core;
 
+import com.xj.scud.commons.Config;
+import com.xj.scud.commons.NetworkUtil;
 import com.xj.scud.core.exception.ScudExecption;
 import com.xj.scud.server.Provider;
+import com.xj.scud.server.ServerConfig;
+import com.xj.zk.ZkClient;
+import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +46,22 @@ public class ServiceMapper {
             }
             servicesMap.put(serviceName, provider.getService());
             LOGGER.info("Provider info interfaze:{}.", serviceName);
+        }
+    }
+
+    public static void createZkNode(Provider[] providers, ZkClient zkClient, int serverPort) {
+        for (Provider provider : providers) {
+            if (zkClient != null && zkClient.isConnection()) {
+                String path = Config.DNS_PREFIX + provider.getInterfaze().getName() + "/" + provider.getVersion();
+                if (!zkClient.exists(path)) {
+                    zkClient.create(path, CreateMode.PERSISTENT);
+                }
+                try {
+                    zkClient.create(path + "/" + NetworkUtil.getAddress() + ":" + serverPort, new byte[1], true);
+                } catch (SocketException e) {
+                    LOGGER.error("Get local ip fail.", e);
+                }
+            }
         }
     }
 

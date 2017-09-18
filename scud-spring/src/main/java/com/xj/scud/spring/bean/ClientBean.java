@@ -2,6 +2,7 @@ package com.xj.scud.spring.bean;
 
 import com.xj.scud.clent.ClientConfig;
 import com.xj.scud.clent.ScudClient;
+import com.xj.scud.commons.Config;
 import com.xj.scud.core.network.SerializableEnum;
 import com.xj.scud.clent.route.RouteEnum;
 import org.springframework.beans.factory.FactoryBean;
@@ -137,7 +138,7 @@ public class ClientBean<T> implements FactoryBean, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ClientConfig<T> conf = new ClientConfig();
+        ClientConfig conf = new ClientConfig();
         conf.setInterfaze(interfaceClass).setHost(this.host);
         if (version != null) {
             conf.setVersion(version);
@@ -160,6 +161,8 @@ public class ClientBean<T> implements FactoryBean, InitializingBean {
         if (route != null) {
             conf.setRoute(determineRoute());
         }
+        conf.setUseZk(Boolean.parseBoolean(Config.getValue("use.zk", "false")));
+        conf.setZkHost(Config.getValue("zk.host"));
         client = new ScudClient<>(conf);
         client.init();
     }

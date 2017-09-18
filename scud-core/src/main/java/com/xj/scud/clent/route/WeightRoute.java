@@ -80,9 +80,8 @@ public class WeightRoute extends RpcRoute {
     }
 
     @Override
-    public boolean removeServerNode(String key) {
-        boolean res = false;
-        serverNodes.remove(key);
+    public Channel removeServerNode(String key) {
+        Channel channel = serverNodes.remove(key);
         TreeMap<Long, String> newMap = new TreeMap<>();
         lock.writeLock().lock();
         try {
@@ -98,7 +97,7 @@ public class WeightRoute extends RpcRoute {
         } finally {
             lock.writeLock().unlock();
         }
-        return res;
+        return channel;
     }
 
     @Override

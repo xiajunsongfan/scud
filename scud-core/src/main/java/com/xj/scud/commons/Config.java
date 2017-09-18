@@ -18,6 +18,7 @@ public class Config {
     private final static Logger LOGGER = LoggerFactory.getLogger(Config.class);
     private static Properties prop;
     public static boolean METHOD_MONITOR = false;//是否对方法进行性能监控
+    public final static String DNS_PREFIX = "/jdns/";
 
     static {
         init();
@@ -84,6 +85,19 @@ public class Config {
         conf.setIp(prop.getProperty("provider.ip", "0.0.0.0"));
         conf.setNettyWorkPooleSize(Integer.parseInt(prop.getProperty("netty.work.poole.size", "2")));
         conf.setPort(Integer.parseInt(prop.getProperty("provider.port", "6155")));
+        conf.setZkHost(prop.getProperty("zk.host"));
+        conf.setUseZk(Boolean.valueOf(prop.getProperty("use.zk", "false")));
         return conf;
     }
+
+/*    public static ClientConfig buildClientConfig() {
+        ClientConfig conf = new ClientConfig();
+        conf.setZkHost(prop.getProperty("zk.host"));
+        conf.setUseZk(Boolean.valueOf(prop.getProperty("use.zk", "false")));//
+        conf.setHost(prop.getProperty("client.service.host"));
+        conf.setConnectTimeout(Integer.parseInt(prop.getProperty("client.connentTimeout", "4000")));
+        conf.setTimeout(Integer.parseInt(prop.getProperty("clinet.timeout", "1000")));
+        conf.setType(SerializableEnum.valueOf(prop.getProperty("serializable.type", "PROTOBUF")));
+        return conf;
+    }*/
 }

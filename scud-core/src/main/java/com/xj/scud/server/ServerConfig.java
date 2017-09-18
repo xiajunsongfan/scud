@@ -10,6 +10,8 @@ public class ServerConfig {
     private int corePoolSize = 8;//服务work线程数
     private int nettyWorkPooleSize = 2;//netty work线程数
     private int connectTimeout;//连接超时时间 毫秒
+    private boolean useZk = false;//是否使用zookeeper进行集群管理
+    private String zkHost;//zookeeper地址
 
     public String getIp() {
         return ip;
@@ -56,6 +58,22 @@ public class ServerConfig {
         return this;
     }
 
+    public boolean isUseZk() {
+        return useZk;
+    }
+
+    public void setUseZk(boolean useZk) {
+        this.useZk = useZk;
+    }
+
+    public String getZkHost() {
+        return zkHost;
+    }
+
+    public void setZkHost(String zkHost) {
+        this.zkHost = zkHost;
+    }
+
     @Override
     public String toString() {
         return "ServerConfig{" +
@@ -64,6 +82,7 @@ public class ServerConfig {
                 ", corePoolSize=" + corePoolSize +
                 ", nettyWorkPooleSize=" + nettyWorkPooleSize +
                 ", connectTimeout=" + connectTimeout +
+                ", useZk=" + useZk +
                 '}';
     }
 }

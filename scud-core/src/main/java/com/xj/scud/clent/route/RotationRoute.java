@@ -21,14 +21,12 @@ public class RotationRoute extends RpcRoute {
     }
 
     @Override
-    public boolean removeServerNode(String key) {
-        boolean res = false;
+    public Channel removeServerNode(String key) {
         Channel channel;
         if ((channel = serverNodes.remove(key)) != null) {
             nodes.remove(channel);
-            res = true;
         }
-        return res;
+        return channel;
     }
 
     @Override

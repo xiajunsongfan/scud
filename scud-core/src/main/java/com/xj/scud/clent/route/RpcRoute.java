@@ -27,7 +27,7 @@ public abstract class RpcRoute {
      *
      * @param path 节点地址
      */
-    public abstract boolean removeServerNode(String path);
+    public abstract Channel removeServerNode(String path);
 
     /**
      * 获取一个服务节点
