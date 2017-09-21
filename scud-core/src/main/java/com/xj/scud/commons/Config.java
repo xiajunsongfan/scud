@@ -19,6 +19,7 @@ public class Config {
     private static Properties prop;
     public static boolean METHOD_MONITOR = false;//是否对方法进行性能监控
     public final static String DNS_PREFIX = "/jdns/";
+    public static String APP_NAME;
 
     static {
         init();
@@ -47,6 +48,7 @@ public class Config {
             is = urls.get(0).openStream();
             prop.load(is);
             METHOD_MONITOR = "true".equalsIgnoreCase(prop.getProperty("method.performance.monitor", "false"));
+            APP_NAME = prop.getProperty("aap.name");
             LOGGER.info("Method performance monitor status {}.", METHOD_MONITOR ? "on" : "off");
             MonitorReport.init();
         } catch (Exception var4) {
@@ -58,7 +60,9 @@ public class Config {
                 }
             }
         }
-
+        if (APP_NAME == null || "".equals(APP_NAME)) {
+            throw new IllegalArgumentException("scud.properties app.name cannot be null.");
+        }
     }
 
     public static String getValue(String key, String defaultValue) {

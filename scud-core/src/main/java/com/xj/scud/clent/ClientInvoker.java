@@ -3,6 +3,7 @@ package com.xj.scud.clent;
 import com.xj.scud.core.MessageManager;
 import com.xj.scud.core.NetworkProtocol;
 import com.xj.scud.core.RpcResult;
+import com.xj.scud.core.exception.ScudExecption;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;

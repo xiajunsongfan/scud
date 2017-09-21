@@ -43,7 +43,7 @@ public class NettyServer {
     }
 
     public static void stop() {
-        future.channel().closeFuture().syncUninterruptibly();
+        future.channel().close().syncUninterruptibly();
         bossGroup.shutdownGracefully().syncUninterruptibly();
         workerGroup.shutdownGracefully().syncUninterruptibly();
     }

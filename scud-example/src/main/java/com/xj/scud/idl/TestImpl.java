@@ -30,6 +30,7 @@ public class TestImpl implements Test {
         } catch (InterruptedException e) {
 
         }
+        System.out.println(u.toString());
         return u;
     }
 

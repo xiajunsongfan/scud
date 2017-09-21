@@ -26,9 +26,10 @@ public class Client {
             try {
                 User u = t.test("" + i);
                 System.out.println(u.toString());
-            }catch (Exception e){}
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             Thread.sleep(300);
-
         }
 
 

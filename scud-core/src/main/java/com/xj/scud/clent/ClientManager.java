@@ -1,9 +1,11 @@
 package com.xj.scud.clent;
 
+import com.google.gson.Gson;
 import com.xj.scud.clent.route.NodeInfo;
 import com.xj.scud.clent.route.RpcRoute;
 import com.xj.scud.commons.Config;
 import com.xj.scud.core.*;
+import com.xj.scud.core.exception.ScudExecption;
 import com.xj.scud.core.network.netty.NettyClient;
 import com.xj.zk.ZkClient;
 import com.xj.zk.ZkClientException;
@@ -14,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -66,24 +70,66 @@ public class ClientManager<T> {
             }
         } else {
             zkClient = new ZkClient(config.getZkHost(), 2000, 4000);
-            String path = Config.DNS_PREFIX + config.getInterfaze().getName() + "/" + config.getVersion();
-            zkClient.listenChild(path, new Listener() {
+            String path = Config.DNS_PREFIX + Config.APP_NAME + "/" + config.getInterfaze().getName() + "/" + config.getVersion();
+            String clientPath = path + "_clent";
+            if (!zkClient.exists(clientPath)) {
+                zkClient.create(clientPath, new byte[1]);
+            }
+            zkClient.listenChildData(path, new Listener() {
                 @Override
                 public void listen(String path, Watcher.Event.EventType eventType, byte[] data) throws ZkClientException, SocketException {
                     String[] pathArr = path.split("/");
                     String host = pathArr[pathArr.length - 1];
                     String[] ipPort = host.split(":");
                     NodeInfo nodeInfo = new NodeInfo(ipPort[0], Integer.parseInt(ipPort[1]));
+                    boolean online = true;
+                    if (data != null && data.length > 1) {
+                        String msg = new String(data, Charset.forName("UTF-8"));
+                        Gson gson = new Gson();
+                        ServerNodeStatus status = gson.fromJson(msg, ServerNodeStatus.class);
+                        if (status.getStatus() == -1) {
+                            online = false;
+                        }
+                    }
                     if (eventType == Watcher.Event.EventType.NodeCreated) {
-                        LOGGER.info("Get server node :{}", nodeInfo.getPath());
-                        Channel ch = initChannel(nodeInfo.getIp(), nodeInfo.getPort());
-                        route.addServerNode(nodeInfo, ch);
-                        LOGGER.info("Connection server {} success.", nodeInfo.getPath());
+                        LOGGER.info("Get server node {} online={}", nodeInfo.getPath(), online);
+                        if (online) {
+                            Channel ch = initChannel(nodeInfo.getIp(), nodeInfo.getPort());
+                            InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
+                            zkClient.create(clientPath + sock.getAddress() + ":" + sock.getPort(), new byte[1], true);
+                            route.addServerNode(nodeInfo, ch);
+                            LOGGER.info("Connection server {} success.", nodeInfo.getPath());
+                        }
                     } else if (eventType == Watcher.Event.EventType.NodeDeleted) {
-                        Channel channel = route.removeServerNode(nodeInfo.getPath());
+                        Channel ch = route.removeServerNode(nodeInfo.getPath());
                         LOGGER.info("Delete server node :{}", nodeInfo.getPath());
-                        nettyClient.close(channel);
-                        LOGGER.info("Close server {} connection.", nodeInfo.getPath());
+                        if (ch != null) {
+                            nettyClient.close(ch);
+                            InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
+                            zkClient.delete(clientPath + sock.getAddress() + ":" + sock.getPort());
+                            LOGGER.info("Close server {} connection.", nodeInfo.getPath());
+                        }
+                    } else {//数据变化
+                        if (online) {
+                            LOGGER.info("Server node online {}", nodeInfo.getPath());
+                            Channel ch = route.getServer(nodeInfo.getPath());
+                            if (ch == null) {
+                                ch = initChannel(nodeInfo.getIp(), nodeInfo.getPort());
+                                InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
+                                zkClient.create(clientPath + sock.getAddress() + ":" + sock.getPort(), new byte[1], true);
+                                route.addServerNode(nodeInfo, ch);
+                                LOGGER.info("Connection server {} success.", nodeInfo.getPath());
+                            }
+                        } else {
+                            LOGGER.info("Server node offline {}", nodeInfo.getPath());
+                            Channel ch = route.removeServerNode(nodeInfo.getPath());
+                            if (ch != null) {
+                                nettyClient.close(ch);
+                                InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
+                                zkClient.delete(clientPath + sock.getAddress() + ":" + sock.getPort());
+                                LOGGER.info("Close server {} connection.", nodeInfo.getPath());
+                            }
+                        }
                     }
                 }
             });
@@ -106,8 +152,12 @@ public class ClientManager<T> {
      * @return Channel
      * @throws InterruptedException e
      */
-    public Channel getChannel() throws InterruptedException {
-        return this.route.getServer();
+    public Channel getChannel(String serviceName) throws InterruptedException {
+        Channel ch = this.route.getServer();
+        if (ch == null) {
+            throw new ScudExecption("There is no service available, service name : " + serviceName);
+        }
+        return ch;
     }
 
     /**
@@ -124,7 +174,7 @@ public class ClientManager<T> {
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol, seq);
+        this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
         RpcResult result = null;
         try {
             result = rpcFuture.get(config.getTimeout(), TimeUnit.MILLISECONDS);
@@ -158,7 +208,7 @@ public class ClientManager<T> {
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
         rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol, seq);
+        this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
         return new AsyncResponseFuture<>(rpcFuture, seq);
     }
 
@@ -176,7 +226,7 @@ public class ClientManager<T> {
         RpcFuture<RpcResult> rpcFuture = new AsyncResponseCallback(callback, config.getTimeout());
         rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
-        this.invoker.invoke(this.getChannel(), protocol, seq);
+        this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
     }
 
     /**

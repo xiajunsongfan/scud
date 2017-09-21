@@ -1,5 +1,6 @@
 package com.xj.scud.core;
 
+import com.google.gson.Gson;
 import com.xj.scud.commons.Config;
 import com.xj.scud.commons.NetworkUtil;
 import com.xj.scud.core.exception.ScudExecption;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,14 +52,17 @@ public class ServiceMapper {
     }
 
     public static void createZkNode(Provider[] providers, ZkClient zkClient, int serverPort) {
+        ServerNodeStatus status = new ServerNodeStatus(1);
+        Gson gson = new Gson();
+        byte[] data = gson.toJson(status).getBytes(Charset.forName("UTF-8"));
         for (Provider provider : providers) {
             if (zkClient != null && zkClient.isConnection()) {
-                String path = Config.DNS_PREFIX + provider.getInterfaze().getName() + "/" + provider.getVersion();
+                String path = Config.DNS_PREFIX + Config.APP_NAME + "/" + provider.getInterfaze().getName() + "/" + provider.getVersion();
                 if (!zkClient.exists(path)) {
                     zkClient.create(path, CreateMode.PERSISTENT);
                 }
                 try {
-                    zkClient.create(path + "/" + NetworkUtil.getAddress() + ":" + serverPort, new byte[1], true);
+                    zkClient.create(path + "/" + NetworkUtil.getAddress() + ":" + serverPort, data, true);
                 } catch (SocketException e) {
                     LOGGER.error("Get local ip fail.", e);
                 }

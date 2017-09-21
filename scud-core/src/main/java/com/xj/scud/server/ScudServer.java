@@ -30,40 +30,47 @@ public class ScudServer {
     }
 
     public void start() {
-        if (!isRun) {
-            isRun = true;
-            if (config.isUseZk()) {
-                zkClient = new ZkClient(config.getZkHost(), 2000, 5000);
-            }
-            ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
-            ServiceMapper.init(this.providers);
-            ServerManager manager = new ServerManager(config, executor);
-            NettyServer.start(this.config, manager);
-            ServiceMapper.createZkNode(this.providers, this.zkClient, this.config.getPort());
-            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {//系统停止时服务关闭
-                @Override
-                public void run() {
-                    stop();
+        synchronized (ScudServer.class) {
+            if (!isRun) {
+                isRun = true;
+                if (config.isUseZk()) {
+                    zkClient = new ZkClient(config.getZkHost(), 2000, 5000);
                 }
-            }));
-            LOGGER.info("Scud server start config info:{}", config.toString());
-        } else {
-            throw new RuntimeException("Scud server cannot start multiple times.");
+                ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
+                ServiceMapper.init(this.providers);
+                ServerManager manager = new ServerManager(config, executor);
+                NettyServer.start(this.config, manager);
+                ServiceMapper.createZkNode(this.providers, this.zkClient, this.config.getPort());
+                Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {//系统停止时服务关闭
+                    @Override
+                    public void run() {
+                        stop(executor);
+                    }
+                }));
+                LOGGER.info("Scud server start config info:{}", config.toString());
+            } else {
+                throw new RuntimeException("Scud server cannot start multiple times.");
+            }
         }
     }
 
-    public void stop() {
+    public void stop(ThreadPoolExecutor executor) {
         try {
             for (Provider provider : providers) {
                 if (zkClient != null && zkClient.isConnection()) {
-                    String path = Config.DNS_PREFIX + provider.getInterfaze().getName() + "/" + provider.getVersion() + "/" + NetworkUtil.getAddress() + ":" + config.getPort();
+                    String path = Config.DNS_PREFIX + Config.APP_NAME + "/" + provider.getInterfaze().getName() + "/" + provider.getVersion() + "/" + NetworkUtil.getAddress() + ":" + config.getPort();
                     zkClient.delete(path);
                 }
             }
-            zkClient.close();
-            Thread.sleep(1000);
+            if (zkClient != null && zkClient.isConnection()) {
+                zkClient.close();
+                Thread.sleep(1000);
+            }
         } catch (Exception e) {
+            LOGGER.error("", e);
         }
         NettyServer.stop();
+        executor.shutdown();
+        LOGGER.info("Scud server stop.");
     }
 }
