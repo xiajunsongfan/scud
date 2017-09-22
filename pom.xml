@@ -12,6 +12,7 @@
         <module>scud-core</module>
         <module>scud-example</module>
         <module>scud-spring</module>
+        <module>scud-console</module>
     </modules>
 
 

@@ -1,0 +1,46 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ http://www.springframework.org/schema/mvc
+ http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <mvc:annotation-driven/>
+
+    <!-- 扫描java注解的根目录 -->
+    <context:component-scan base-package="com.xj.scud.console"/>
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager">
+            <bean class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+                <property name="ignoreAcceptHeader" value="true"/>
+                <property name="defaultContentType" value="application/json"/>
+                <property name="mediaTypes">
+                    <props>
+                        <prop key="json">application/json</prop>
+                        <prop key="xml">application/xml</prop>
+                    </props>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>text/plain;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 配置视图解析器 如何把handler 方法返回值解析为实际的物理视图, 请求将会被映射到views目录下名字对应的.jsp文件 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+</beans>

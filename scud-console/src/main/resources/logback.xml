@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+    <property name="LOG_PATH" value="/usr/local/quan/tomcat-8.5.4/logs"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d [%t] %5p \(%F:%L\) - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="rest" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+        <File>./logs/scud-console.log</File> 
+        <encoder> 
+            <pattern>%d [%t] %5p \(%F:%L\) - %m%n</pattern> 
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>128MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <fileNamePattern>./logs/archive/scud-console-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>24</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <logger name="com.xj.scud" level="INFO" additivity="false">
+        <appender-ref ref="rest"/>
+    </logger>
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
