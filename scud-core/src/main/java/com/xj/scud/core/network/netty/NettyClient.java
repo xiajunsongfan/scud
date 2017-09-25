@@ -43,7 +43,7 @@ public class NettyClient {
         boot.group(boss).channel(NioSocketChannel.class).handler(new NettyClientInitializer(executor));
         try {
             return boot.connect(ip, port).sync().channel();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

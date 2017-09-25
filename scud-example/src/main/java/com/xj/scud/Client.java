@@ -2,15 +2,14 @@ package com.xj.scud;
 
 import com.xj.scud.clent.ClientConfig;
 import com.xj.scud.clent.ScudClientFactory;
-import com.xj.scud.core.AsyncPrepare;
-import com.xj.scud.core.RpcCallback;
-import com.xj.scud.core.RpcContext;
+import com.xj.scud.clent.route.RouteEnum;
+import com.xj.scud.commons.Config;
+import com.xj.scud.core.network.SerializableEnum;
 import com.xj.scud.idl.Test;
 import com.xj.scud.idl.User;
-import com.xj.scud.core.network.SerializableEnum;
-import com.xj.scud.clent.route.RouteEnum;
-
-import java.util.concurrent.Future;
+import com.xj.scud.monitor.MonitorHandlerInterface;
+import com.xj.scud.monitor.MonitorReport;
+import com.xj.scud.monitor.TopPercentile;
 
 /**
  * Author: xiajun
@@ -26,7 +25,7 @@ public class Client {
             try {
                 User u = t.test("" + i);
                 System.out.println(u.toString());
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             Thread.sleep(300);

@@ -31,7 +31,6 @@ public class AsyncResponseCallback extends RpcFuture<RpcResult> {
         } else {
             callback.success(response.getValue());
         }
-        this.monitor();
     }
 
     @Override

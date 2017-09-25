@@ -151,7 +151,7 @@
             <ul class="nav nav-list">
                 <li class="active">
                     <a href="index.htm">
-                        <i class="icon-dashboard"></i>
+                        <i class="icon-desktop"></i>
                         <span class="menu-text"> 运用中心 </span>
                     </a>
                 </li>
@@ -234,8 +234,8 @@
                                     <div class="widget-box transparent">
                                         <div class="widget-header widget-header-flat">
                                             <h4 class="lighter">
-                                                <i class="icon-desktop"></i>
-                                                <span style="font-family:arial;font-size:16px"> ${i.name}:${i.version}</span>
+                                                <i class="icon-android"></i>
+                                                <span style="font-family:arial;font-size:14px"> ${i.name}:${i.version}</span>
                                             </h4>
                                         </div>
                                     </div>
@@ -339,15 +339,7 @@
     <!--[if lte IE 8]>
     <script src="assets/js/excanvas.min.js"></script>
     <![endif]-->
-
-    <script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="assets/js/jquery.ui.touch-punch.min.js"></script>
     <script src="assets/js/jquery.slimscroll.min.js"></script>
-    <script src="assets/js/jquery.easy-pie-chart.min.js"></script>
-    <script src="assets/js/jquery.sparkline.min.js"></script>
-    <script src="assets/js/flot/jquery.flot.min.js"></script>
-    <script src="assets/js/flot/jquery.flot.pie.min.js"></script>
-    <script src="assets/js/flot/jquery.flot.resize.min.js"></script>
 
     <!-- ace scripts -->
 
@@ -358,46 +350,8 @@
 
     <script type="text/javascript">
         jQuery(function ($) {
-            $('.easy-pie-chart.percentage').each(function () {
-                var $box = $(this).closest('.infobox');
-                var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
-                var trackColor = barColor == 'rgba(255,255,255,0.95)' ? 'rgba(255,255,255,0.25)' : '#E2E2E2';
-                var size = parseInt($(this).data('size')) || 50;
-                $(this).easyPieChart({
-                    barColor: barColor,
-                    trackColor: trackColor,
-                    scaleColor: false,
-                    lineCap: 'butt',
-                    lineWidth: parseInt(size / 10),
-                    animate: /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()) ? false : 1000,
-                    size: size
-                });
-            })
-
-            $('.sparkline').each(function () {
-                var $box = $(this).closest('.infobox');
-                var barColor = !$box.hasClass('infobox-dark') ? $box.css('color') : '#FFF';
-                $(this).sparkline('html', {tagValuesAttribute: 'data-values', type: 'bar', barColor: barColor, chartRangeMin: $(this).data('min') || 0});
-            });
-
             var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
             var previousPoint = null;
-
-
-            var d1 = [];
-            for (var i = 0; i < Math.PI * 2; i += 0.5) {
-                d1.push([i, Math.sin(i)]);
-            }
-
-            var d2 = [];
-            for (var i = 0; i < Math.PI * 2; i += 0.5) {
-                d2.push([i, Math.cos(i)]);
-            }
-
-            var d3 = [];
-            for (var i = 0; i < Math.PI * 2; i += 0.2) {
-                d3.push([i, Math.tan(i)]);
-            }
 
             $('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
             function tooltip_placement(context, source) {
@@ -416,36 +370,6 @@
             $('.dialogs,.comments').slimScroll({
                 height: '300px'
             });
-            //Android's default browser somehow is confused when tapping on label which will lead to dragging the task
-            //so disable dragging when clicking on label
-            var agent = navigator.userAgent.toLowerCase();
-            if ("ontouchstart" in document && /applewebkit/.test(agent) && /android/.test(agent))
-                $('#tasks').on('touchstart', function (e) {
-                    var li = $(e.target).closest('#tasks li');
-                    if (li.length == 0)return;
-                    var label = li.find('label.inline').get(0);
-                    if (label == e.target || $.contains(label, e.target)) e.stopImmediatePropagation();
-                });
-
-            $('#tasks').sortable({
-                        opacity: 0.8,
-                        revert: true,
-                        forceHelperSize: true,
-                        placeholder: 'draggable-placeholder',
-                        forcePlaceholderSize: true,
-                        tolerance: 'pointer',
-                        stop: function (event, ui) {//just for Chrome!!!! so that dropdowns on items don't appear below other items after being moved
-                            $(ui.item).css('z-index', 'auto');
-                        }
-                    }
-            );
-            $('#tasks').disableSelection();
-            $('#tasks input:checkbox').removeAttr('checked').on('click', function () {
-                if (this.checked) $(this).closest('li').addClass('selected');
-                else $(this).closest('li').removeClass('selected');
-            });
-
-
         })
     </script>
 </div>

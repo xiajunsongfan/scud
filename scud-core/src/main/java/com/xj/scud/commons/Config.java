@@ -1,6 +1,5 @@
 package com.xj.scud.commons;
 
-import com.xj.scud.monitor.MonitorReport;
 import com.xj.scud.server.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,6 @@ public class Config {
             METHOD_MONITOR = "true".equalsIgnoreCase(prop.getProperty("method.performance.monitor", "false"));
             APP_NAME = prop.getProperty("aap.name");
             LOGGER.info("Method performance monitor status {}.", METHOD_MONITOR ? "on" : "off");
-            MonitorReport.init();
         } catch (Exception var4) {
             if (is != null) {
                 try {

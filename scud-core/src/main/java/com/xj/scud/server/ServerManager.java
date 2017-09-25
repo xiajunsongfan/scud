@@ -66,7 +66,7 @@ public class ServerManager {
                             RpcResult result = buildRpcResult(200, throwable, res);
                             NetworkProtocol responseProtocol = protocolProcesser.buildResponseProtocol(protocol, result);
                             ChannelFuture channelFuture = ctx.writeAndFlush(responseProtocol);
-                            monitor(invocation.getMethod(), (int) (System.currentTimeMillis() - startTime));
+                            monitor(invocation.getService(), invocation.getMethod(), invocation.getVersion(), (int) (System.currentTimeMillis() - startTime));
                             if (LOGGER.isDebugEnabled()) {
                                 channelFuture.addListeners(new ChannelFutureListener() {
                                     @Override
@@ -111,9 +111,9 @@ public class ServerManager {
         return rpcResult;
     }
 
-    private void monitor(String methodName, int costTime) {
+    private void monitor(String serivce, String methodName, String version, int costTime) {
         if (Config.METHOD_MONITOR) {
-            PerformanceMonitor.add(methodName, costTime);
+            PerformanceMonitor.add(serivce + ":" + methodName + ":" + version, costTime);
         }
     }
 }

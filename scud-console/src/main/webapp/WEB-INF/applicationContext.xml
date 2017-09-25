@@ -5,5 +5,4 @@
 
     <!-- 扫描java注解的根目录 -->
     <context:component-scan base-package="com.xj.scud.console"/>
-
 </beans>

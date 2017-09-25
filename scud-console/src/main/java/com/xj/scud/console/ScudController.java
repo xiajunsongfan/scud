@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import java.util.Map;
 public class ScudController {
     private final static Logger LOGGER = LoggerFactory.getLogger(ScudController.class);
     private final static ZkClient ZK_CLIENT;
+    private static Map<String, AppBean> APP_MAP;
 
     static {
         ZK_CLIENT = new ZkClient(ConfigUtil.getValue("zk.host"), 4000, 5000);
@@ -35,47 +37,47 @@ public class ScudController {
     @RequestMapping(value = "/index.htm")
     public ModelAndView index() {
         ModelAndView mad = new ModelAndView("index");
-        List<String> apps = ZK_CLIENT.getChild("/jdns", false);
-        List<AppBean> appBeanList = new ArrayList<>();
-        if (apps != null) {
-            appBeanList = new ArrayList<>(apps.size());
-            for (String app : apps) {
-                AppBean appBean = new AppBean();
-                appBean.setName(app);
-                List<String> ifs = ZK_CLIENT.getChild("/jdns/" + app, false);
-                List<ServiceInterfaceBean> interfaces = new ArrayList<>();
-                if (ifs != null) {
-                    interfaces = new ArrayList<>(ifs.size());
-                    for (String anIf : ifs) {
-                        ServiceInterfaceBean sib = new ServiceInterfaceBean();
-                        sib.setName(anIf);
-                        interfaces.add(sib);
-                    }
+        List<String> interfaceList = ZK_CLIENT.getChild("/jdns", false);
+        Map<String, AppBean> appMap = new HashMap<>(32);
+        if (interfaceList != null) {
+            for (String interfacz : interfaceList) {
+                String appName = new String(ZK_CLIENT.getData(Config.DNS_PREFIX + interfacz), Charset.forName("UTF-8"));
+                AppBean appBean = appMap.get(appName);
+                if (appBean == null) {
+                    appBean = new AppBean();
+                    appMap.put(appName, appBean);
+                    appBean.setName(appName);
                 }
-                appBean.setInterfaces(interfaces);
-                appBeanList.add(appBean);
+                List<ServiceInterfaceBean> interfaces = appBean.getInterfaces();
+                if (interfaces == null) {
+                    interfaces = new ArrayList<>(8);
+                    appBean.setInterfaces(interfaces);
+                }
+                ServiceInterfaceBean sifb = new ServiceInterfaceBean();
+                sifb.setName(interfacz);
+                interfaces.add(sifb);
             }
         }
-        mad.addObject("apps", appBeanList);
+        APP_MAP = appMap;
+        mad.addObject("apps", appMap.values());
         return mad;
     }
 
     @RequestMapping(value = "/serviceDetail.htm")
     public ModelAndView detail(String appName) {
         ModelAndView mad = new ModelAndView("serviceDetail");
-        List<String> ifs = ZK_CLIENT.getChild("/jdns/" + appName, false);
+        AppBean appBean = APP_MAP.get(appName);
         List<ServiceInterfaceBean> interfaces = new ArrayList<>();
-        if (ifs != null) {
-            interfaces = new ArrayList<>(ifs.size());
-            for (String anIf : ifs) {
-
-                List<String> versions = ZK_CLIENT.getChild("/jdns/" + appName + "/" + anIf, false);
+        if (appBean != null) {
+            List<ServiceInterfaceBean> sifb = appBean.getInterfaces();
+            for (ServiceInterfaceBean anIf : sifb) {
+                List<String> versions = ZK_CLIENT.getChild(Config.DNS_PREFIX + anIf.getName(), false);
                 if (versions != null) {
                     for (String version : versions) {
                         ServiceInterfaceBean sib = new ServiceInterfaceBean();
-                        sib.setName(anIf);
+                        sib.setName(anIf.getName());
                         sib.setVersion(version);
-                        List<String> hosts = ZK_CLIENT.getChild("/jdns/" + appName + "/" + anIf + "/" + version, false);
+                        List<String> hosts = ZK_CLIENT.getChild(Config.DNS_PREFIX + anIf.getName() + "/" + version, false);
                         List<ServerInfoBean> infos = new ArrayList<>();
                         if (hosts != null) {
                             infos = new ArrayList<>(hosts.size());
@@ -84,7 +86,7 @@ public class ScudController {
                                 String[] ipPort = host.split(":");
                                 bean.setIp(ipPort[0]);
                                 bean.setPort(ipPort[1]);
-                                byte[] data = ZK_CLIENT.getData("/jdns/" + appName + "/" + anIf + "/" + version + "/" + host, false);
+                                byte[] data = ZK_CLIENT.getData(Config.DNS_PREFIX + anIf.getName() + "/" + version + "/" + host, false);
                                 if (data != null && data.length > 1) {
                                     Gson gson = new Gson();
                                     ServerNodeStatus sns = gson.fromJson(new String(data), ServerNodeStatus.class);

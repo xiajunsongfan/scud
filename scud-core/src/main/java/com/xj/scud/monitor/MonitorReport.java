@@ -18,21 +18,36 @@ public class MonitorReport {
     private final static Logger LOGGER = LoggerFactory.getLogger(MonitorReport.class);
     private final static ScheduledExecutorService es = Executors.newSingleThreadScheduledExecutor(new DefaultThreadFactory("Scud-monitor-thread", true));
     private volatile static boolean run = false;
+    private static MonitorHandlerInterface mdi;
 
-    public static void init() {
+    public static void init(String handler) {
         if (Config.METHOD_MONITOR && !run) {
             run = true;
-            int initDelay = (int) (System.currentTimeMillis() / 1000) % 60;
+            if (handler != null && !"".equals(handler)) {
+                try {
+                    mdi = (MonitorHandlerInterface) Class.forName(handler).newInstance();
+                } catch (Exception e) {
+                    LOGGER.error("Monitor handler new instance fail.", e);
+                }
+            }
+            int initDelay = (int) (System.currentTimeMillis() / 1000) % 10;
             es.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    Map<String, PerformanceData.TopPercentile> report = PerformanceMonitor.monitor();
-                    for (Map.Entry<String, PerformanceData.TopPercentile> entry : report.entrySet()) {
-                        PerformanceData.TopPercentile tp = entry.getValue();
-                        LOGGER.info(tp.toString());
+                    Map<String, TopPercentile> report = PerformanceMonitor.monitor();
+                    for (Map.Entry<String, TopPercentile> entry : report.entrySet()) {
+                        TopPercentile tp = entry.getValue();
+                        if (mdi == null) {
+                            LOGGER.info(tp.toString());
+                        } else {
+                            String[] smv = entry.getKey().split(":");
+                            System.out.println("------------------------------------->");
+                            mdi.monitor(Config.APP_NAME, smv[0], smv[1], smv[2], tp);
+                            LOGGER.info(tp.toString());
+                        }
                     }
                 }
-            }, initDelay + 60, 60, TimeUnit.SECONDS);
+            }, initDelay + 10, 10, TimeUnit.SECONDS);
         }
     }
 }

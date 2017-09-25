@@ -37,7 +37,7 @@ public class ClientManager<T> {
     private Invoker invoker;
     private NettyClient nettyClient;
     private RpcRoute route;
-    private ZkClient zkClient;
+    private static volatile ZkClient zkClient;//只能有一个client，不允许一个运用中出现多个zookeeper集群
 
     public ClientManager(ProtocolProcesser processer, ClientConfig config) {
         this.processer = processer;
@@ -69,8 +69,14 @@ public class ClientManager<T> {
                 }
             }
         } else {
-            zkClient = new ZkClient(config.getZkHost(), 2000, 4000);
-            String path = Config.DNS_PREFIX + Config.APP_NAME + "/" + config.getInterfaze().getName() + "/" + config.getVersion();
+            if (zkClient == null || !zkClient.isConnection()) {
+                synchronized (ClientManager.class) {
+                    if (zkClient == null) {
+                        zkClient = new ZkClient(config.getZkHost(), 2000, 4000);
+                    }
+                }
+            }
+            String path = Config.DNS_PREFIX + config.getInterfaze().getName() + "/" + config.getVersion();
             String clientPath = path + "_clent";
             if (!zkClient.exists(clientPath)) {
                 zkClient.create(clientPath, new byte[1]);
@@ -172,7 +178,6 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
-        rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
         RpcResult result = null;
@@ -182,7 +187,6 @@ public class ClientManager<T> {
             if (result == null) {//客户端超时
                 MessageManager.remove(protocol.getSequence());
             }
-            rpcFuture.monitor();
         }
         if (result != null) {
             Throwable exception = result.getException();
@@ -206,7 +210,6 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
-        rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
         return new AsyncResponseFuture<>(rpcFuture, seq);
@@ -224,7 +227,6 @@ public class ClientManager<T> {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
         RpcFuture<RpcResult> rpcFuture = new AsyncResponseCallback(callback, config.getTimeout());
-        rpcFuture.setMethodName(method.getName());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
     }

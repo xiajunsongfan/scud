@@ -25,12 +25,12 @@ public class PerformanceMonitor {
         data.add(costTime);
     }
 
-    static Map<String, PerformanceData.TopPercentile> monitor() {
-        Map<String, PerformanceData.TopPercentile> tpMap = new HashMap<>(monitorMap.size());
+    static Map<String, TopPercentile> monitor() {
+        Map<String, TopPercentile> tpMap = new HashMap<>(monitorMap.size());
         for (String key : monitorMap.keySet()) {
             PerformanceData oldData = monitorMap.get(key);
             monitorMap.put(key, new PerformanceData(oldData.getMethodName()));
-            PerformanceData.TopPercentile tp = oldData.getTP();
+            TopPercentile tp = oldData.getTP();
             tpMap.put(key, tp);
         }
         return tpMap;

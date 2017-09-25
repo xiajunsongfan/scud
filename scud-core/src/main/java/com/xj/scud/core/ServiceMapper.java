@@ -57,7 +57,18 @@ public class ServiceMapper {
         byte[] data = gson.toJson(status).getBytes(Charset.forName("UTF-8"));
         for (Provider provider : providers) {
             if (zkClient != null && zkClient.isConnection()) {
-                String path = Config.DNS_PREFIX + Config.APP_NAME + "/" + provider.getInterfaze().getName() + "/" + provider.getVersion();
+                String path = Config.DNS_PREFIX + provider.getInterfaze().getName();
+                if (!zkClient.exists(path)) {
+                    zkClient.create(path, CreateMode.PERSISTENT);
+                    zkClient.setData(path, Config.APP_NAME.getBytes(Charset.forName("UTF-8")));
+                } else {
+                    byte[] name = zkClient.getData(path);
+                    String appName = new String(name, Charset.forName("UTF-8"));
+                    if (!Config.APP_NAME.equals(appName)) {
+                        throw new ScudExecption("Interfaze: " + provider.getInterfaze().getName() + " has been bound to " + appName);
+                    }
+                }
+                path = path + "/" + provider.getVersion();
                 if (!zkClient.exists(path)) {
                     zkClient.create(path, CreateMode.PERSISTENT);
                 }

@@ -4,6 +4,7 @@ import com.xj.scud.commons.Config;
 import com.xj.scud.commons.NetworkUtil;
 import com.xj.scud.core.ServiceMapper;
 import com.xj.scud.core.network.netty.NettyServer;
+import com.xj.scud.monitor.MonitorReport;
 import com.xj.zk.ZkClient;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
@@ -47,6 +48,7 @@ public class ScudServer {
                         stop(executor);
                     }
                 }));
+                MonitorReport.init(Config.getValue("monitor.handler"));
                 LOGGER.info("Scud server start config info:{}", config.toString());
             } else {
                 throw new RuntimeException("Scud server cannot start multiple times.");
@@ -58,7 +60,7 @@ public class ScudServer {
         try {
             for (Provider provider : providers) {
                 if (zkClient != null && zkClient.isConnection()) {
-                    String path = Config.DNS_PREFIX + Config.APP_NAME + "/" + provider.getInterfaze().getName() + "/" + provider.getVersion() + "/" + NetworkUtil.getAddress() + ":" + config.getPort();
+                    String path = Config.DNS_PREFIX + provider.getInterfaze().getName() + "/" + provider.getVersion() + "/" + NetworkUtil.getAddress() + ":" + config.getPort();
                     zkClient.delete(path);
                 }
             }
