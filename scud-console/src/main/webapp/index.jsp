@@ -154,7 +154,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="consoleList.htm">
                         <i class="icon-dashboard"></i>
                         <span class="menu-text"> 控制台 </span>
                     </a>
@@ -211,7 +211,7 @@
                         <i class="icon-home home-icon"></i>
                         <a href="#">首页</a>
                     </li>
-                    <li class="active">控制台</li>
+                    <li class="active">监控中心</li>
                 </ul><!-- .breadcrumb -->
 
                 <div class="nav-search" id="nav-search">

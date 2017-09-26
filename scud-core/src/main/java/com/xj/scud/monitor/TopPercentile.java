@@ -12,6 +12,12 @@ public class TopPercentile {
     private int tp999;
     private int min;
     private int max;
+    private String appName;
+    private String serviceName;
+    private String method;
+    private String version;
+    private String host;
+    private int time;
 
     public TopPercentile(int tp50, int tp90, int tp99, int tp999, int count, int min, int max) {
         this.tp50 = tp50;
@@ -67,16 +73,71 @@ public class TopPercentile {
         return max;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String buildKey() {
+        return appName + ":" + serviceName + ":" + method + ":" + version;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
     @Override
     public String toString() {
-        return "{" +
-                "count=" + count +
+        return "count=" + count +
                 ", tp50=" + tp50 +
                 ", tp90=" + tp90 +
                 ", tp99=" + tp99 +
                 ", tp999=" + tp999 +
                 ", min=" + min +
                 ", max=" + max +
-                '}';
+                ", appName='" + appName + '\'' +
+                ", serviceName='" + serviceName + '\'' +
+                ", method='" + method + '\'' +
+                ", version='" + version + '\'' +
+                ", time=" + time;
     }
 }

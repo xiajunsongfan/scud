@@ -221,7 +221,6 @@ public class PerformanceData {
             if (i >= 0) {
                 node = stack[i--];
                 count += node.count;
-                //System.out.println(node.costTime + "  " + count);
                 if (min == -1) {
                     min = node.costTime;
                 }
@@ -270,24 +269,5 @@ public class PerformanceData {
 
     public int getSize() {
         return size;
-    }
-
-    public static void main(String[] args) {
-        PerformanceData data = new PerformanceData("test");
-        data.add(8);
-        data.add(2);
-        data.add(3);
-        data.add(6);
-        data.add(5);
-        data.add(23);
-        data.add(7);
-        data.add(8);
-        data.add(45);
-        data.add(3);
-        data.add(32);
-        data.add(1);
-        data.add(13);
-        data.add(36);
-        System.out.println(data.getTP());
     }
 }

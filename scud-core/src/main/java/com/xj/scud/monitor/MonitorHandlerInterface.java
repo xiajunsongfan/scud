@@ -9,9 +9,7 @@ public interface MonitorHandlerInterface {
     /**
      * 监控数据
      *
-     * @param appName       运用名称
-     * @param method        接口方法名称
      * @param topPercentile tp性能数据
      */
-    void monitor(String appName, String serviceName, String method, String version, TopPercentile topPercentile);
+    void monitor(TopPercentile topPercentile);
 }

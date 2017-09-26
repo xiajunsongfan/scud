@@ -2,23 +2,25 @@ package com.xj.scud.console;
 
 import com.google.gson.Gson;
 import com.xj.scud.commons.Config;
+import com.xj.scud.console.monitor.ConsoleMonitorHandlerImpl;
 import com.xj.scud.console.util.ConfigUtil;
 import com.xj.scud.console.view.AppBean;
+import com.xj.scud.console.view.MonitorChartBean;
 import com.xj.scud.console.view.ServerInfoBean;
 import com.xj.scud.console.view.ServiceInterfaceBean;
 import com.xj.scud.core.ServerNodeStatus;
+import com.xj.scud.monitor.TopPercentile;
 import com.xj.zk.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Author: baichuan - xiajun
@@ -122,5 +124,42 @@ public class ScudController {
         String data = gson.toJson(status);
         ZK_CLIENT.setData(Config.DNS_PREFIX + appName + "/" + path, data.getBytes(Charset.forName("UTF-8")));
         return this.detail(appName);
+    }
+
+    @RequestMapping(value = "/consoleList.htm")
+    public ModelAndView consoleList() {
+        ModelAndView mad = new ModelAndView("consoleList");
+        mad.addObject("apps", ConsoleMonitorHandlerImpl.getAppList());
+        return mad;
+    }
+
+    @RequestMapping(value = "/consoleMethodList.htm")
+    public ModelAndView consoleMethodList(String appName) {
+        ModelAndView mad = new ModelAndView("consoleMethodList");
+        mad.addObject("methods", ConsoleMonitorHandlerImpl.getMethodList(appName));
+        mad.addObject("appName", appName);
+        return mad;
+    }
+
+    @RequestMapping(value = "/consoleDetail.htm")
+    public ModelAndView consoleDetail(String appName, String serviceName, String methodName, String version) {
+        ModelAndView mad = new ModelAndView("consoleDetail");
+        mad.addObject("data", ConsoleMonitorHandlerImpl.getMonitorData(appName, serviceName, methodName, version));
+        mad.addObject("appName", appName);
+        return mad;
+    }
+
+    @RequestMapping(value = "/getMonitorData.htm")
+    @ResponseBody
+    public String getMonitorData(String appName, String key, String time) {
+        String[] args = key.split(":");
+        MonitorChartBean chartBean = ConsoleMonitorHandlerImpl.getMonitorLastData(appName, args[0], args[1], args[2]);
+        if (chartBean != null) {
+            if (!time.equals(chartBean.getTime().get(0))) {
+                Gson gson = new Gson();
+                return gson.toJson(chartBean);
+            }
+        }
+        return "{}";
     }
 }

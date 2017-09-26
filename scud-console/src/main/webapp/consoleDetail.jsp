@@ -14,8 +14,6 @@
     <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"/>
     <![endif]-->
 
-    <!-- ace styles -->
-
     <link rel="stylesheet" href="assets/css/ace.min.css"/>
     <link rel="stylesheet" href="assets/css/ace-rtl.min.css"/>
     <link rel="stylesheet" href="assets/css/ace-skins.min.css"/>
@@ -30,6 +28,7 @@
 
     <script src="assets/js/ace-extra.min.js"></script>
 
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
     <!--[if lt IE 9]>
     <script src="assets/js/html5shiv.js"></script>
@@ -63,7 +62,7 @@
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <img class="nav-user-photo" src="assets/avatars/user.jpg" alt="Jason's Photo"/>
-                        XX先生
+                        夏先生
                         <i class="icon-caret-down"></i>
                     </a>
 
@@ -149,13 +148,13 @@
             </div><!-- #sidebar-shortcuts -->
 
             <ul class="nav nav-list">
-                <li class="active">
-                    <a href="index.htm">
+                <li>
+                    <a href="index.html">
                         <i class="icon-desktop"></i>
                         <span class="menu-text"> 运用中心 </span>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="consoleList.htm">
                         <i class="icon-dashboard"></i>
                         <span class="menu-text"> 监控中心 </span>
@@ -211,167 +210,206 @@
                 <ul class="breadcrumb">
                     <li>
                         <i class="icon-home home-icon"></i>
-                        <a href="/index.htm">首页</a>
+                        <a href="consoleList.htm">监控中心</a>
                     </li>
-                    <li class="active">控制台</li>
-                </ul>
+                    <li>
+                        <a href="consoleMethodList.htm?appName=${requestScope.appName}">${requestScope.appName}</a>
+                    </li>
+                    <li class="active">监控图表</li>
+                </ul><!-- .breadcrumb -->
+
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
-								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off"/>
-									<i class="icon-search nav-search-icon"></i>
-								</span>
+                        <span class="input-icon">
+                            <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off"/>
+                            <i class="icon-search nav-search-icon"></i>
+                        </span>
                     </form>
-                </div>
+                </div><!-- #nav-search -->
             </div>
 
             <div class="page-content">
                 <div class="row">
-                    <div class="col-xs-12">
-                        <c:forEach items="${requestScope.interfaces }" var="i">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="widget-box transparent">
-                                        <div class="widget-header widget-header-flat">
-                                            <h4 class="lighter">
-                                                <i class="icon-android"></i>
-                                                <span style="font-family:arial;font-size:14px"> ${i.name}:${i.version}</span>
-                                            </h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>服务IP</th>
-                                                <th>服务端口</th>
-                                                <th>服务状态</th>
-                                                <th>操作</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <c:forEach items="${i.servers }" var="s">
-                                                <tr>
-                                                    <td>${s.ip}</td>
-                                                    <td>${s.port}</td>
-                                                    <td>
-                                                        <c:if test="${s.status == 1}">
-                                                            <span class="label label-success arrowed">online</span>
-                                                        </c:if>
-                                                        <c:if test="${s.status == -1}">
-                                                            <span class="label label-danger arrowed-in">offline</span>
-                                                        </c:if>
-                                                        <c:if test="${s.status == 0}">
-                                                            <span class="label label-success arrowed">client</span>
-                                                        </c:if>
-                                                    </td>
-                                                    <td>
-                                                        <c:if test="${s.status == 1}">
-                                                            <a class="btn btn-xs btn-danger"
-                                                               href="/offline.htm?appName=${requestScope.appName }&path=${i.name}/${i.version}/${s.ip}:${s.port}">
-                                                                <i class="icon-cloud-download bigger-120"></i>
-                                                                下线
-                                                            </a>
-                                                        </c:if>
-                                                        <c:if test="${s.status == -1}">
-                                                            <a class="btn btn-xs btn-success"
-                                                               href="/online.htm?appName=${requestScope.appName }&path=${i.name}/${i.version}/${s.ip}:${s.port}">
-                                                                <i class="icon-cloud-upload bigger-120"></i>
-                                                                上线
-                                                            </a>
-                                                        </c:if>
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </div>
+                    <div class="col-xs-12" id="chart" style="height:300px;"></div>
                 </div>
             </div>
         </div>
         <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
             <i class="icon-double-angle-up icon-only bigger-110"></i>
         </a>
-    </div><!-- /.main-container -->
-
-    <!-- basic scripts -->
-
-    <!--[if !IE]> -->
-
-    <script src="assets/js/jquery-2.0.3.min.js"></script>
-
-    <!-- <![endif]-->
-
-    <!--[if IE]>
-    <script src="assets/js/jquery-2.0.3.min.js"></script>
-    <![endif]-->
-
-    <!--[if !IE]> -->
-
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='assets/js/jquery-2.0.3.min.js'>" + "<" + "script>");
-    </script>
-
-    <!-- <![endif]-->
-
-    <!--[if IE]>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>" + "<" + "script>");
-    </script>
-    <![endif]-->
-
-    <script type="text/javascript">
-        if ("ontouchend" in document) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "script>");
-    </script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/typeahead-bs2.min.js"></script>
-
-    <!-- page specific plugin scripts -->
-
-    <!--[if lte IE 8]>
-    <script src="assets/js/excanvas.min.js"></script>
-    <![endif]-->
-    <script src="assets/js/jquery.slimscroll.min.js"></script>
-
-    <!-- ace scripts -->
-
-    <script src="assets/js/ace-elements.min.js"></script>
-    <script src="assets/js/ace.min.js"></script>
-
-    <!-- inline scripts related to this page -->
-
-    <script type="text/javascript">
-        jQuery(function ($) {
-            var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
-            var previousPoint = null;
-
-            $('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
-            function tooltip_placement(context, source) {
-                var $source = $(source);
-                var $parent = $source.closest('.tab-content')
-                var off1 = $parent.offset();
-                var w1 = $parent.width();
-
-                var off2 = $source.offset();
-                var w2 = $source.width();
-
-                if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
-                return 'left';
-            }
-
-            $('.dialogs,.comments').slimScroll({
-                height: '300px'
-            });
-        })
-    </script>
+    </div>
 </div>
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="assets/js/jquery-2.0.3.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='assets/js/jquery-2.0.3.min.js'>" + "<" + "script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>" + "<" + "script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if ("ontouchend" in document) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "script>");
+</script>
+<script src="assets/js/bootstrap.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script src="assets/js/excanvas.min.js"></script>
+<![endif]-->
+
+<script src="assets/js/jquery.slimscroll.min.js"></script>
+
+<!-- ace scripts -->
+
+<script src="assets/js/ace-elements.min.js"></script>
+<script src="assets/js/ace.min.js"></script>
+<script src="assets/js/echarts.min.js"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+        function tooltip_placement(context, source) {
+            var $source = $(source);
+            var $parent = $source.closest('.tab-content')
+            var off1 = $parent.offset();
+            var w1 = $parent.width();
+            var off2 = $source.offset();
+            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+            return 'left';
+        }
+    })
+    myChart = echarts.init(document.getElementById('chart'));
+    tp50 = ${requestScope.data.TP50};
+    tp90 = ${requestScope.data.TP90};
+    tp99 = ${requestScope.data.TP99};
+    tp999 =${requestScope.data.TP999};
+    tpmax = ${requestScope.data.MAX};
+    time = ${requestScope.data.buildTime()};
+    lastTime = time[time.length - 1];
+    option = {
+        title: {
+            text: '${requestScope.data.title}'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        color: ['#48cda6', '#11abff', '#968ade', '#fd87ab', '#c23531'],
+        legend: {
+            data: ['TP50', 'TP90', 'TP99', 'TP999', 'MAX']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: time
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: 'TP50',
+                type: 'line',
+                smooth: true,
+                data: tp50
+            },
+            {
+                name: 'TP90',
+                type: 'line',
+                smooth: true,
+                data: tp90
+            },
+            {
+                name: 'TP99',
+                type: 'line',
+                smooth: true,
+                data: tp99
+            },
+            {
+                name: 'TP999',
+                type: 'line',
+                smooth: true,
+                data: tp999
+            },
+            {
+                name: 'MAX',
+                type: 'line',
+                smooth: true,
+                data: tpmax
+            }
+        ]
+    };
+    myChart.setOption(option);
+
+    setInterval(function () {
+        jQuery.ajax({
+            url: "getMonitorData.htm?appName=${requestScope.appName}&key=${requestScope.data.title}&time=" + lastTime,
+            type: 'get',
+            dataType: 'json',
+            success: function (jsons) {
+                console.log(jsons);
+                if (!!jsons.time) {
+                    if (tp50.length >= 15) {
+                        tp50.shift();
+                        tp90.shift();
+                        tp99.shift();
+                        tp999.shift();
+                        tpmax.shift();
+                        time.shift();
+                    }
+                    tp50.push(jsons.TP50[0]);
+                    tp90.push(jsons.TP90[0]);
+                    tp99.push(jsons.TP99[0]);
+                    tp999.push(jsons.TP999[0]);
+                    tpmax.push(jsons.MAX[0]);
+                    time.push(jsons.time[0]);
+                    myChart.setOption({
+                        xAxis: {
+                            data: time
+                        },
+                        series: [
+                            {data: tp50}, {data: tp90}, {data: tp99}, {data: tp999}, {data: tpmax}
+                        ]
+                    });
+                    lastTime = jsons.time[0];
+                }
+            }
+        });
+    }, 30000);
+</script>
 </body>
 </html>
+
+

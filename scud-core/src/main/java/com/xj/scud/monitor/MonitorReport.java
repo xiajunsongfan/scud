@@ -30,24 +30,28 @@ public class MonitorReport {
                     LOGGER.error("Monitor handler new instance fail.", e);
                 }
             }
-            int initDelay = (int) (System.currentTimeMillis() / 1000) % 10;
+            int initDelay = (int) (System.currentTimeMillis() / 1000) % 60;
             es.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     Map<String, TopPercentile> report = PerformanceMonitor.monitor();
                     for (Map.Entry<String, TopPercentile> entry : report.entrySet()) {
                         TopPercentile tp = entry.getValue();
+                        String[] smv = entry.getKey().split(":");
+                        tp.setAppName(Config.APP_NAME);
+                        tp.setServiceName(smv[0]);
+                        tp.setMethod(smv[1]);
+                        tp.setVersion(smv[2]);
+                        tp.setTime((int) (System.currentTimeMillis() / 1000));
                         if (mdi == null) {
                             LOGGER.info(tp.toString());
                         } else {
-                            String[] smv = entry.getKey().split(":");
-                            System.out.println("------------------------------------->");
-                            mdi.monitor(Config.APP_NAME, smv[0], smv[1], smv[2], tp);
+                            mdi.monitor(tp);
                             LOGGER.info(tp.toString());
                         }
                     }
                 }
-            }, initDelay + 10, 10, TimeUnit.SECONDS);
+            }, initDelay + 60, 60, TimeUnit.SECONDS);
         }
     }
 }

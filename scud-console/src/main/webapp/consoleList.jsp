@@ -14,8 +14,6 @@
     <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"/>
     <![endif]-->
 
-    <!-- ace styles -->
-
     <link rel="stylesheet" href="assets/css/ace.min.css"/>
     <link rel="stylesheet" href="assets/css/ace-rtl.min.css"/>
     <link rel="stylesheet" href="assets/css/ace-skins.min.css"/>
@@ -30,6 +28,7 @@
 
     <script src="assets/js/ace-extra.min.js"></script>
 
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
     <!--[if lt IE 9]>
     <script src="assets/js/html5shiv.js"></script>
@@ -59,11 +58,10 @@
         <div class="navbar-header pull-right" role="navigation">
             <ul class="nav ace-nav">
 
-
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <img class="nav-user-photo" src="assets/avatars/user.jpg" alt="Jason's Photo"/>
-                        XX先生
+                        X先生
                         <i class="icon-caret-down"></i>
                     </a>
 
@@ -74,16 +72,13 @@
                                 设置
                             </a>
                         </li>
-
                         <li>
                             <a href="#">
                                 <i class="icon-user"></i>
                                 个人资料
                             </a>
                         </li>
-
                         <li class="divider"></li>
-
                         <li>
                             <a href="#">
                                 <i class="icon-off"></i>
@@ -149,16 +144,16 @@
             </div><!-- #sidebar-shortcuts -->
 
             <ul class="nav nav-list">
-                <li class="active">
-                    <a href="index.htm">
+                <li>
+                    <a href="index.html">
                         <i class="icon-desktop"></i>
                         <span class="menu-text"> 运用中心 </span>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="consoleList.htm">
                         <i class="icon-dashboard"></i>
-                        <span class="menu-text"> 监控中心 </span>
+                        <span class="menu-text"> 控制台 </span>
                     </a>
                 </li>
                 <li>
@@ -211,10 +206,11 @@
                 <ul class="breadcrumb">
                     <li>
                         <i class="icon-home home-icon"></i>
-                        <a href="/index.htm">首页</a>
+                        <a href="#">首页</a>
                     </li>
-                    <li class="active">控制台</li>
+                    <li class="active">监控中心</li>
                 </ul>
+
                 <div class="nav-search" id="nav-search">
                     <form class="form-search">
 								<span class="input-icon">
@@ -222,77 +218,52 @@
 									<i class="icon-search nav-search-icon"></i>
 								</span>
                     </form>
-                </div>
+                </div><!-- #nav-search -->
             </div>
 
             <div class="page-content">
                 <div class="row">
                     <div class="col-xs-12">
-                        <c:forEach items="${requestScope.interfaces }" var="i">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="widget-box transparent">
-                                        <div class="widget-header widget-header-flat">
-                                            <h4 class="lighter">
-                                                <i class="icon-android"></i>
-                                                <span style="font-family:arial;font-size:14px"> ${i.name}:${i.version}</span>
-                                            </h4>
-                                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="widget-box transparent">
+                                    <div class="widget-header widget-header-flat">
+                                        <h4 class="lighter">
+                                            <i class="icon-desktop"></i>
+                                            运用列表
+                                        </h4>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered table-hover">
-                                            <thead>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>运用名称</th>
+                                            <th>状态</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach items="${requestScope.apps }" var="a">
                                             <tr>
-                                                <th>服务IP</th>
-                                                <th>服务端口</th>
-                                                <th>服务状态</th>
-                                                <th>操作</th>
+                                                <td>
+                                                    <a href="consoleMethodList.htm?appName=${a }"><strong>${a }</strong></a>
+                                                </td>
+                                                <td>
+                                                    <span class="label label-success arrowed">online</span>
+                                                    <span class="label label-danger arrowed-in">offline</span>
+                                                </td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            <c:forEach items="${i.servers }" var="s">
-                                                <tr>
-                                                    <td>${s.ip}</td>
-                                                    <td>${s.port}</td>
-                                                    <td>
-                                                        <c:if test="${s.status == 1}">
-                                                            <span class="label label-success arrowed">online</span>
-                                                        </c:if>
-                                                        <c:if test="${s.status == -1}">
-                                                            <span class="label label-danger arrowed-in">offline</span>
-                                                        </c:if>
-                                                        <c:if test="${s.status == 0}">
-                                                            <span class="label label-success arrowed">client</span>
-                                                        </c:if>
-                                                    </td>
-                                                    <td>
-                                                        <c:if test="${s.status == 1}">
-                                                            <a class="btn btn-xs btn-danger"
-                                                               href="/offline.htm?appName=${requestScope.appName }&path=${i.name}/${i.version}/${s.ip}:${s.port}">
-                                                                <i class="icon-cloud-download bigger-120"></i>
-                                                                下线
-                                                            </a>
-                                                        </c:if>
-                                                        <c:if test="${s.status == -1}">
-                                                            <a class="btn btn-xs btn-success"
-                                                               href="/online.htm?appName=${requestScope.appName }&path=${i.name}/${i.version}/${s.ip}:${s.port}">
-                                                                <i class="icon-cloud-upload bigger-120"></i>
-                                                                上线
-                                                            </a>
-                                                        </c:if>
-                                                    </td>
-                                                </tr>
-                                            </c:forEach>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </c:forEach>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -300,78 +271,73 @@
         <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
             <i class="icon-double-angle-up icon-only bigger-110"></i>
         </a>
-    </div><!-- /.main-container -->
-
-    <!-- basic scripts -->
-
-    <!--[if !IE]> -->
-
-    <script src="assets/js/jquery-2.0.3.min.js"></script>
-
-    <!-- <![endif]-->
-
-    <!--[if IE]>
-    <script src="assets/js/jquery-2.0.3.min.js"></script>
-    <![endif]-->
-
-    <!--[if !IE]> -->
-
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='assets/js/jquery-2.0.3.min.js'>" + "<" + "script>");
-    </script>
-
-    <!-- <![endif]-->
-
-    <!--[if IE]>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>" + "<" + "script>");
-    </script>
-    <![endif]-->
-
-    <script type="text/javascript">
-        if ("ontouchend" in document) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "script>");
-    </script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/typeahead-bs2.min.js"></script>
-
-    <!-- page specific plugin scripts -->
-
-    <!--[if lte IE 8]>
-    <script src="assets/js/excanvas.min.js"></script>
-    <![endif]-->
-    <script src="assets/js/jquery.slimscroll.min.js"></script>
-
-    <!-- ace scripts -->
-
-    <script src="assets/js/ace-elements.min.js"></script>
-    <script src="assets/js/ace.min.js"></script>
-
-    <!-- inline scripts related to this page -->
-
-    <script type="text/javascript">
-        jQuery(function ($) {
-            var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
-            var previousPoint = null;
-
-            $('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
-            function tooltip_placement(context, source) {
-                var $source = $(source);
-                var $parent = $source.closest('.tab-content')
-                var off1 = $parent.offset();
-                var w1 = $parent.width();
-
-                var off2 = $source.offset();
-                var w2 = $source.width();
-
-                if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
-                return 'left';
-            }
-
-            $('.dialogs,.comments').slimScroll({
-                height: '300px'
-            });
-        })
-    </script>
+    </div>
 </div>
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="assets/js/jquery-2.0.3.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='assets/js/jquery-2.0.3.min.js'>" + "<" + "script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>" + "<" + "script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if ("ontouchend" in document) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "script>");
+</script>
+<script src="assets/js/bootstrap.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script src="assets/js/excanvas.min.js"></script>
+<![endif]-->
+
+<script src="assets/js/jquery.slimscroll.min.js"></script>
+<!-- ace scripts -->
+<script src="assets/js/ace-elements.min.js"></script>
+<script src="assets/js/ace.min.js"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
+        var previousPoint = null;
+
+        $('#recent-box [data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+        function tooltip_placement(context, source) {
+            var $source = $(source);
+            var $parent = $source.closest('.tab-content')
+            var off1 = $parent.offset();
+            var w1 = $parent.width();
+
+            var off2 = $source.offset();
+            if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) return 'right';
+            return 'left';
+        }
+
+        $('.dialogs,.comments').slimScroll({
+            height: '300px'
+        });
+
+    })
+</script>
 </body>
 </html>
+

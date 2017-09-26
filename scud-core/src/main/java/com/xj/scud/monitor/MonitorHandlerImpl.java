@@ -30,12 +30,12 @@ public class MonitorHandlerImpl implements MonitorHandlerInterface {
     }
 
     @Override
-    public void monitor(String appName, String serviceName, String method, String version, TopPercentile topPercentile) {
+    public void monitor(TopPercentile topPercentile) {
         if (monitorHandler != null) {
             try {
-                monitorHandler.monitor(appName, serviceName, method, version, topPercentile);
+                monitorHandler.monitor(topPercentile);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("", e);
             }
         } else {
             LOGGER.error("Monitor handler exception, create instance fail.");
