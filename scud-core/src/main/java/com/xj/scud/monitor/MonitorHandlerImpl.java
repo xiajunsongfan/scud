@@ -1,8 +1,8 @@
 package com.xj.scud.monitor;
 
-import com.xj.scud.clent.ClientConfig;
-import com.xj.scud.clent.ScudClientFactory;
-import com.xj.scud.clent.route.RouteEnum;
+import com.xj.scud.client.ClientConfig;
+import com.xj.scud.client.ScudClientFactory;
+import com.xj.scud.client.route.RouteEnum;
 import com.xj.scud.commons.Config;
 import com.xj.scud.core.network.SerializableEnum;
 import org.slf4j.Logger;

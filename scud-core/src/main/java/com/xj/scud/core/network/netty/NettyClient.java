@@ -1,6 +1,6 @@
 package com.xj.scud.core.network.netty;
 
-import com.xj.scud.clent.ClientConfig;
+import com.xj.scud.client.ClientConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;

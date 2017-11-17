@@ -20,7 +20,7 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
      ScudServer server = new ScudServer(conf, provider);
      server.start();
 
-    /** clent 端 **/
+    /** client**/
     ClientConfig<Test> conf = new ClientConfig();
     conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
     Test t = ScudClientFactory.getServiceConsumer(conf);

@@ -1,6 +1,6 @@
 package com.xj.scud.core.network.proxy;
 
-import com.xj.scud.clent.ClientManager;
+import com.xj.scud.client.ClientManager;
 import com.xj.scud.core.RpcContext;
 import com.xj.scud.core.RpcFuture;
 import net.sf.cglib.proxy.Enhancer;

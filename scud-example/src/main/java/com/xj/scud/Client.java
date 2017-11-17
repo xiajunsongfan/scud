@@ -1,15 +1,11 @@
 package com.xj.scud;
 
-import com.xj.scud.clent.ClientConfig;
-import com.xj.scud.clent.ScudClientFactory;
-import com.xj.scud.clent.route.RouteEnum;
-import com.xj.scud.commons.Config;
+import com.xj.scud.client.ClientConfig;
+import com.xj.scud.client.ScudClientFactory;
+import com.xj.scud.client.route.RouteEnum;
 import com.xj.scud.core.network.SerializableEnum;
 import com.xj.scud.idl.Test;
 import com.xj.scud.idl.User;
-import com.xj.scud.monitor.MonitorHandlerInterface;
-import com.xj.scud.monitor.MonitorReport;
-import com.xj.scud.monitor.TopPercentile;
 
 /**
  * Author: xiajun
@@ -19,7 +15,7 @@ public class Client {
     public static void main(String[] args) throws Exception {
         final ClientConfig conf = new ClientConfig();
         conf.setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1)
-                .setType(SerializableEnum.PROTOBUF).setUseZk(true).setZkHost("127.0.0.1:2181");
+                .setType(SerializableEnum.PROTOBUF).setHost("127.0.0.1:6157").setUseZk(false).setZkHost("127.0.0.1:2181");
         final Test t = ScudClientFactory.getServiceConsumer(conf);
         for (int i = 0; i < 30000; i++) {
             try {
