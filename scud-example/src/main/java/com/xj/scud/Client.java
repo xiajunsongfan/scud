@@ -14,7 +14,7 @@ import com.xj.scud.idl.User;
 public class Client {
     public static void main(String[] args) throws Exception {
         final ClientConfig conf = new ClientConfig();
-        conf.setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1)
+        conf.setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1")
                 .setType(SerializableEnum.PROTOBUF).setHost("127.0.0.1:6157").setUseZk(false).setZkHost("127.0.0.1:2181");
         final Test t = ScudClientFactory.getServiceConsumer(conf);
         for (int i = 0; i < 30000; i++) {

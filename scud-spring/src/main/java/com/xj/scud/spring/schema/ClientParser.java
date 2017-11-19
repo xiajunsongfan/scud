@@ -17,7 +17,6 @@ public class ClientParser extends AbstractSingleBeanDefinitionParser {
         String interfaceClass = element.getAttribute("interface");
         String version = element.getAttribute("version");
         String timeout = element.getAttribute("timeout");
-        String workThreadSize = element.getAttribute("workThreadSize");
         String connentTimeout = element.getAttribute("connentTimeout");
         String nettyBossThreadSize = element.getAttribute("nettyBossThreadSize");
         String type = element.getAttribute("type");
@@ -31,9 +30,6 @@ public class ClientParser extends AbstractSingleBeanDefinitionParser {
         }
         if (timeout != null && !"".equals(timeout)) {
             builder.addPropertyValue("timeout", timeout);
-        }
-        if (workThreadSize != null && !"".equals(workThreadSize)) {
-            builder.addPropertyValue("workThreadSize", workThreadSize);
         }
         if (connentTimeout != null && !"".equals(connentTimeout)) {
             builder.addPropertyValue("connentTimeout", connentTimeout);

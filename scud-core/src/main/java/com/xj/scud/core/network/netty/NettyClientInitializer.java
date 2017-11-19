@@ -14,10 +14,9 @@ import java.util.concurrent.TimeUnit;
  * Date: 2017/01/02 14:32
  */
 public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
-    private ThreadPoolExecutor executor;
 
-    public NettyClientInitializer(ThreadPoolExecutor executor) {
-        this.executor = executor;
+    public NettyClientInitializer() {
+
     }
 
     @Override
@@ -31,6 +30,6 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("idleState", new IdleStateHandler(idel * 3, idel * 3, idel, TimeUnit.MILLISECONDS));
         pipeline.addLast("idleEvent", new IdleEventHandler());
 
-        pipeline.addLast("handler", new NettyClientHandler(this.executor));
+        pipeline.addLast("handler", new NettyClientHandler());
     }
 }

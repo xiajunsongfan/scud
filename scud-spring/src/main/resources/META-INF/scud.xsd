@@ -9,40 +9,6 @@
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
     <xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool.xsd"/>
-
-    <!--xsd:complexType name="serverConfig">
-        <xsd:attribute name="id" type="xsd:ID" use="required">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="port" type="xsd:int" use="required">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[The service port.]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="host" type="xsd:string" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[The service binding ip. default: 0.0.0.0]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="corePoolSize" type="xsd:int" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[The server work thread number. default: 8]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="nettyWorkPooleSize" type="xsd:int" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[The server netty work thread number. default: 2]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="connentTimeout" type="xsd:int" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[The server response timeout. default: 1000ms]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
-    </xsd:complexType-->
-
     <xsd:complexType name="serverBean">
         <xsd:sequence>
             <xsd:element name="providers" type="providers" minOccurs="1" maxOccurs="unbounded"/>
@@ -52,8 +18,6 @@
                 <xsd:documentation><![CDATA[ server beans not need to inject. ]]></xsd:documentation>
             </xsd:annotation>
         </xsd:attribute>
-        <!--xsd:attribute name="config" type="xsd:string" use="required"></xsd:attribute-->
-
     </xsd:complexType>
 
     <xsd:complexType name="providerBean">
@@ -111,11 +75,6 @@
                 <xsd:documentation><![CDATA[The server read timeout. default: 1000]]></xsd:documentation>
             </xsd:annotation>
         </xsd:attribute>
-        <xsd:attribute name="workThreadSize" type="xsd:int" use="optional">
-            <xsd:annotation>
-                <xsd:documentation><![CDATA[The server netty work thread number. default: 4]]></xsd:documentation>
-            </xsd:annotation>
-        </xsd:attribute>
         <xsd:attribute name="connentTimeout" type="xsd:int" use="optional">
             <xsd:annotation>
                 <xsd:documentation><![CDATA[The server response timeout. default: 1000ms]]></xsd:documentation>
@@ -151,6 +110,5 @@
     </xsd:complexType>
 
     <xsd:element name="server" type="serverBean"/>
-    <!--xsd:element name="serverConfig" type="serverConfig"/-->
     <xsd:element name="client" type="clientBean"/>
 </xsd:schema>

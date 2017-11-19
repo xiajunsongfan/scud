@@ -17,10 +17,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class NettyClientHandler extends SimpleChannelInboundHandler<NetworkProtocol> {
     private final static Logger LOGGER = LoggerFactory.getLogger(NettyClientHandler.class);
-    private ThreadPoolExecutor executor;
 
-    public NettyClientHandler(ThreadPoolExecutor executor) {
-        this.executor = executor;
+    public NettyClientHandler() {
     }
 
     @Override
@@ -28,18 +26,12 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<NetworkProto
         if (msg.getType() == -1) {
             LOGGER.debug("Client recv heart package id={}", msg.getSequence());
         } else {
-            this.executor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        RpcResult result = SerializableHandler.responseDecode(msg);
-                        MessageManager.release(msg.getSequence(), result);
-                    } catch (Exception e) {
-                        LOGGER.error("Client handler fail.", e);
-                    }
-                }
-            });
+            try {
+                RpcResult result = SerializableHandler.responseDecode(msg);
+                MessageManager.release(msg.getSequence(), result);
+            } catch (Exception e) {
+                LOGGER.error("Client handler fail.", e);
+            }
         }
     }
-
 }

@@ -25,12 +25,10 @@ public class NettyClient {
     private final static Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
     private EventLoopGroup boss;
     private ClientConfig config;
-    private ThreadPoolExecutor executor;
 
     public NettyClient(ClientConfig config) {
         this.config = config;
         boss = new NioEventLoopGroup(getThreadSize(config.getNettyBossThreadSize()), new DefaultThreadFactory("netty-client-boss"));
-        executor = new ThreadPoolExecutor(1, getThreadSize(config.getWorkThreadSize()), 30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new DefaultThreadFactory("scud-client-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     public Channel connect(String ip, int port) {
@@ -40,7 +38,7 @@ public class NettyClient {
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator(64, 1024, 65536))
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
-        boot.group(boss).channel(NioSocketChannel.class).handler(new NettyClientInitializer(executor));
+        boot.group(boss).channel(NioSocketChannel.class).handler(new NettyClientInitializer());
         try {
             return boot.connect(ip, port).sync().channel();
         } catch (Exception e) {

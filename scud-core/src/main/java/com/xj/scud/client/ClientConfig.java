@@ -14,7 +14,6 @@ public class ClientConfig {
     private Class interfaze;//服务接口类
     private String version;//服务版本
     private SerializableEnum type = SerializableEnum.PROTOBUF;//序列化方式
-    private int workThreadSize = 4;
     private int nettyBossThreadSize = 1;
     private RouteEnum route = RouteEnum.RANDOM;//路由方式
     private boolean useZk = false;//是否使用zookeeper进行集群管理
@@ -47,15 +46,6 @@ public class ClientConfig {
 
     public ClientConfig setType(SerializableEnum type) {
         this.type = type;
-        return this;
-    }
-
-    public int getWorkThreadSize() {
-        return workThreadSize;
-    }
-
-    public ClientConfig setWorkThreadSize(int workThreadSize) {
-        this.workThreadSize = workThreadSize;
         return this;
     }
 

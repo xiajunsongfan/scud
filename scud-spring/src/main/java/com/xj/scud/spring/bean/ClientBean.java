@@ -17,7 +17,6 @@ public class ClientBean<T> implements FactoryBean, InitializingBean {
     private Class interfaceClass;
     private String version;
     private int timeout;
-    private int workThreadSize;
     private int connentTimeout;
     private int nettyBossThreadSize;
     private String type;
@@ -55,14 +54,6 @@ public class ClientBean<T> implements FactoryBean, InitializingBean {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
-    }
-
-    public int getWorkThreadSize() {
-        return workThreadSize;
-    }
-
-    public void setWorkThreadSize(int workThreadSize) {
-        this.workThreadSize = workThreadSize;
     }
 
     public int getConnentTimeout() {
@@ -145,9 +136,6 @@ public class ClientBean<T> implements FactoryBean, InitializingBean {
         }
         if (timeout > 0) {
             conf.setTimeout(timeout);
-        }
-        if (workThreadSize > 0) {
-            conf.setWorkThreadSize(workThreadSize);
         }
         if (connentTimeout > 0) {
             conf.setConnectTimeout(connentTimeout);
