@@ -77,7 +77,7 @@ public class ClientManager<T> {
                 }
             }
             String path = Config.DNS_PREFIX + config.getInterfaze().getName() + "/" + config.getVersion();
-            String clientPath = path + "_clent";
+            final String clientPath = path + "_clent";
             if (!zkClient.exists(clientPath)) {
                 zkClient.create(clientPath, new byte[1]);
             }

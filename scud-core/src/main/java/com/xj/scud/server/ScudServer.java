@@ -37,7 +37,7 @@ public class ScudServer {
                 if (config.isUseZk()) {
                     zkClient = new ZkClient(config.getZkHost(), 2000, 5000);
                 }
-                ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
+                final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
                 ServiceMapper.init(this.providers);
                 ServerManager manager = new ServerManager(config, executor);
                 NettyServer.start(this.config, manager);

@@ -47,7 +47,7 @@ public class ServerManager {
         this.executor.submit(new Runnable() {
             @Override
             public void run() {
-                long startTime = System.currentTimeMillis();
+                final long startTime = System.currentTimeMillis();
                 RpcInvocation invocation = SerializableHandler.requestDecode(protocol);
                 long reqTime = invocation.getRequestTime();
                 int timeout = invocation.getRequestTimeout();

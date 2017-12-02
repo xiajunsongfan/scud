@@ -4,7 +4,6 @@ import com.xj.scud.idl.Test;
 import com.xj.scud.idl.TestImpl;
 import com.xj.scud.server.Provider;
 import com.xj.scud.server.ScudServer;
-import com.xj.scud.server.ServerConfig;
 
 /**
  * Author: xiajun
