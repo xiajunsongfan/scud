@@ -1,8 +1,10 @@
 package com.xj.scud.commons;
 
-import sun.misc.BASE64Encoder;
+
+import io.netty.handler.codec.base64.Base64Encoder;
 
 import java.security.MessageDigest;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,8 +56,7 @@ public class ParamSignUtil {
         String md5Str = MD5_MAP.get(str);
         if (md5Str == null) {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-            BASE64Encoder base64en = new BASE64Encoder();
-            String newstr = base64en.encode(md5.digest(str.getBytes()));
+            String newstr = Base64.getEncoder().encodeToString(md5.digest(str.getBytes()));
             MD5_MAP.put(str, newstr);
             return newstr;
         }
