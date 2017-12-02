@@ -23,13 +23,13 @@ public class Client {
                 .setType(SerializableEnum.PROTOBUF).setUseZk(true).setZkHost("127.0.0.1:2181");
         final Test t = ScudClientFactory.getServiceConsumer(conf);
 
-   /*     * 同步阻塞模式 *
+        //* 同步阻塞模式 *
         Long stime = System.currentTimeMillis();
         String u = t.test2();
         System.out.println(u.toString() + " cost: " + (System.currentTimeMillis() - stime) + "ms");
-*/
+
         //* 异步Future模式 *
-        Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
+       /* Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
             @Override
             public void prepare() {
                 t.test("12",12);
@@ -44,7 +44,7 @@ public class Client {
         });
         System.out.println("-----------------------------------");
         //* 异步Callback模式 *
-        /*RpcContext.invokeWithCallback(new AsyncPrepare() {
+        RpcContext.invokeWithCallback(new AsyncPrepare() {
             @Override
             public void prepare() {
                 t.test("test");
