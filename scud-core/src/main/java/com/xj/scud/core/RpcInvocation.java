@@ -14,7 +14,7 @@ public class RpcInvocation implements Serializable {
     private String version;//服务版本
     private String method;//方法名称
     private Object[] args;//方法参数
-    private String[] argTypes;//方法参数类型
+    private String argsSign;//方法参数类型
     private long requestTime;//客户端发起请求时间
     private int requestTimeout;//客户端超时时间
     private Map<String, Object> attach;//附加属性
@@ -43,12 +43,12 @@ public class RpcInvocation implements Serializable {
         this.args = args;
     }
 
-    public String[] getArgTypes() {
-        return argTypes;
+    public String getArgsSign() {
+        return argsSign;
     }
 
-    public void setArgTypes(String[] argTypes) {
-        this.argTypes = argTypes;
+    public void setArgsSign(String argsSign) {
+        this.argsSign = argsSign;
     }
 
     public long getRequestTime() {

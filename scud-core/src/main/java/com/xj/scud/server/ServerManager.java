@@ -52,7 +52,7 @@ public class ServerManager {
                 long reqTime = invocation.getRequestTime();
                 int timeout = invocation.getRequestTimeout();
                 if (startTime - reqTime < timeout) {//超时的任务就不用执行了
-                    String methodName = ProtocolProcesser.buildMethodName(invocation.getMethod(), invocation.getArgTypes());
+                    String methodName = ProtocolProcesser.buildMethodName(invocation.getMethod(), invocation.getArgsSign());
                     Object res = null;
                     Throwable throwable = null;
                     try {

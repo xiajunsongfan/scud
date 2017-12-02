@@ -21,7 +21,7 @@ public class MonitorHandlerImpl implements MonitorHandlerInterface {
             synchronized (MonitorHandlerImpl.class) {
                 if (monitorHandler == null) {
                     ClientConfig conf = new ClientConfig();
-                    conf.setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(MonitorHandlerInterface.class).setVersion("1.0").setWorkThreadSize(1)
+                    conf.setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(MonitorHandlerInterface.class).setVersion("1.0")
                             .setType(SerializableEnum.PROTOBUF).setUseZk(true).setZkHost(Config.getValue("zk.host"));
                     monitorHandler = ScudClientFactory.getServiceConsumer(conf);
                 }

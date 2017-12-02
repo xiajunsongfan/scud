@@ -1,6 +1,7 @@
 package com.xj.scud.core;
 
 import com.xj.scud.client.ClientConfig;
+import com.xj.scud.commons.ParamSignUtil;
 import com.xj.scud.core.network.SerializableHandler;
 
 import java.lang.reflect.Method;
@@ -34,14 +35,7 @@ public class ProtocolProcesser {
         invocation.setArgs(args);
         invocation.setRequestTime(System.currentTimeMillis());
         invocation.setRequestTimeout(conf.getTimeout());
-        if (args != null) {
-            String[] argTypes = new String[args.length];
-            for (int i = 0; i < args.length; i++) {
-                argTypes[i] = args[i].getClass().getSimpleName();
-            }
-            invocation.setArgTypes(argTypes);
-        }
-
+        invocation.setArgsSign(ParamSignUtil.sign(args));//TODO: sig
         NetworkProtocol protocol = new NetworkProtocol();
         protocol.setType(conf.getType().getValue());
         protocol.setSequence(seq);
@@ -75,28 +69,20 @@ public class ProtocolProcesser {
      */
     public static String buildMethodName(Method method) {
         Class[] pram = method.getParameterTypes();
-        StringBuilder builder = new StringBuilder(method.getName());
-        if (pram != null) {
-            for (Class aClass : pram) {
-                builder.append(":").append(aClass.getSimpleName());
-            }
-        }
-        return builder.toString();
+        return method.getName() + ":" + ParamSignUtil.sign(pram);
     }
 
     /**
      * 根据方法名称和参数类型生成方法签名
      *
-     * @param method 方法名
-     * @param args   方法参数
+     * @param method   方法名
+     * @param argsSign 方法参数
      * @return String
      */
-    public static String buildMethodName(String method, String[] args) {
+    public static String buildMethodName(String method, String argsSign) {
         StringBuilder builder = new StringBuilder(method);
-        if (args != null) {
-            for (String type : args) {
-                builder.append(":").append(type);
-            }
+        if (argsSign != null) {
+            builder.append(":").append(argsSign);
         }
         return builder.toString();
     }
