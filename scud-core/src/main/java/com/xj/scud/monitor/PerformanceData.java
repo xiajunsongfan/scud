@@ -56,7 +56,7 @@ public class PerformanceData {
         return index;
     }
 
-    private int unIndex(int index) {
+    private int unindex(int index) {
         int value;
         if (index >= 1536) {
             value = 16128;
@@ -100,22 +100,22 @@ public class PerformanceData {
             }
             count += c.get();
             if (min < 0) {
-                min = unIndex(i);
+                min = unindex(i);
             }
             if (tp50 < 0 && count >= tp50Index) {
-                tp50 = unIndex(i);
+                tp50 = unindex(i);
             }
             if (tp90 < 0 && count >= tp90Index) {
-                tp90 = unIndex(i);
+                tp90 = unindex(i);
             }
             if (tp99 < 0 && count >= tp99Index) {
-                tp99 = unIndex(i);
+                tp99 = unindex(i);
             }
             if (tp999 < 0 && count >= tp999Index) {
-                tp999 = unIndex(i);
+                tp999 = unindex(i);
             }
             if (count >= amount.get()) {
-                max = unIndex(i);
+                max = unindex(i);
             }
         }
         return new TopPercentile(tp50, tp90, tp99, tp999, snapshotSize, min, max);
