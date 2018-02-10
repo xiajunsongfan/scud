@@ -61,15 +61,15 @@ public class PerformanceData {
         if (index >= 1536) {
             value = 16128;
         } else if (index >= 1280) {
-            value = (index - 956) * 32;
+            value = (index - 956) * 32 + 16;//误差0 - 31，加16取中间值误差-16 - 15
         } else if (index >= 1024) {
-            value = (index - 784) * 16;
+            value = (index - 784) * 16 + 8;
         } else if (index >= 768) {
-            value = (index - 544) * 8;
+            value = (index - 544) * 8 + 4;
         } else if (index >= 512) {
-            value = (index - 320) * 4;
+            value = (index - 320) * 4 + 2;
         } else if (index >= 256) {
-            value = (index - 128) * 2;
+            value = (index - 128) * 2 + 1;
         } else {
             value = index;
         }
