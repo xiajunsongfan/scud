@@ -23,11 +23,11 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
-      <module name="scud" target="1.7" />
-      <module name="scud-core" target="1.7" />
-      <module name="scud-example" target="1.7" />
-      <module name="scud-spring" target="1.7" />
-      <module name="scud.console" target="1.7" />
+      <module name="scud" target="1.8" />
+      <module name="scud-core" target="1.8" />
+      <module name="scud-example" target="1.8" />
+      <module name="scud-spring" target="1.8" />
+      <module name="scud.console" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

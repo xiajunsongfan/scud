@@ -44,7 +44,7 @@ public class ServerManager {
      * @param ctx      channel对象
      */
     public void invoke(final NetworkProtocol protocol, final ChannelHandlerContext ctx) {
-        this.executor.submit(new Runnable() {
+        this.executor.execute(new Runnable() {
             @Override
             public void run() {
                 final long startTime = System.currentTimeMillis();
