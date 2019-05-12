@@ -34,11 +34,6 @@ public class AsyncResponseCallback extends RpcFuture<RpcResult> {
     }
 
     @Override
-    public void copyFuture(RpcFuture<RpcResult> future) {
-
-    }
-
-    @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return false;
     }
@@ -54,12 +49,12 @@ public class AsyncResponseCallback extends RpcFuture<RpcResult> {
     }
 
     @Override
-    public RpcResult get() throws InterruptedException, ExecutionException {
+    public RpcResult get() {
         return null;
     }
 
     @Override
-    public RpcResult get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public RpcResult get(long timeout, TimeUnit unit) {
         return null;
     }
 }

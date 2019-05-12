@@ -3,7 +3,7 @@ package com.xj.scud.monitor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/08/25 11:41
  * 方法性能数据
  */
