@@ -10,7 +10,6 @@ import com.xj.scud.core.network.proxy.RpcClientProxy;
 public class ScudClient<T> {
     private volatile T client;
     private ClientConfig conf;
-    private ProtocolProcesser processer;
     private volatile ClientManager manager;
 
     public ScudClient(ClientConfig conf) {
@@ -21,8 +20,7 @@ public class ScudClient<T> {
         if (manager == null) {
             synchronized (ScudClient.class) {
                 if (manager == null) {
-                    this.processer = new ProtocolProcesser(this.conf);
-                    this.manager = new ClientManager(processer, this.conf);
+                    this.manager = new ClientManager(new ProtocolProcesser(this.conf), this.conf);
                     this.manager.initCluster();
                 }
             }

@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/04 09:40
  */
 public class ScudServer {

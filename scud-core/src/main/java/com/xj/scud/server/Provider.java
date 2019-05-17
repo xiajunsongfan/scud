@@ -1,7 +1,7 @@
 package com.xj.scud.server;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/04/18 15:36
  */
 public class Provider<T> {

@@ -1,7 +1,7 @@
 package com.xj.scud.server;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/01/04 10:56
  */
 public class ServerConfig {

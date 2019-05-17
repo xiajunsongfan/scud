@@ -11,7 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/08/26 09:52
  */
 public class MonitorReport {

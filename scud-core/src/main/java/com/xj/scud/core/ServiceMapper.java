@@ -5,7 +5,6 @@ import com.xj.scud.commons.Config;
 import com.xj.scud.commons.NetworkUtil;
 import com.xj.scud.core.exception.ScudExecption;
 import com.xj.scud.server.Provider;
-import com.xj.scud.server.ServerConfig;
 import com.xj.zk.ZkClient;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;

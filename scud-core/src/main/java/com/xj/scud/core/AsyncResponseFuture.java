@@ -50,14 +50,7 @@ public class AsyncResponseFuture<T> extends ResponseFuture<T> {
                 MessageManager.remove(packageId);
             }
         }
-        if (result != null) {
-            Throwable exception = result.getException();
-            if (exception != null) {
-                throw new ExecutionException(exception);
-            }
-            return (T) result.getValue();
-        }
-        return null;
+        return this.getValue(result);
     }
 
     @Override
@@ -70,6 +63,10 @@ public class AsyncResponseFuture<T> extends ResponseFuture<T> {
                 MessageManager.remove(packageId);
             }
         }
+        return this.getValue(result);
+    }
+
+    private T getValue(RpcResult result) throws ExecutionException {
         if (result != null) {
             Throwable exception = result.getException();
             if (exception != null) {

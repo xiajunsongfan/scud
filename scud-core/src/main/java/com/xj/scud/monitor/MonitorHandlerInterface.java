@@ -1,7 +1,7 @@
 package com.xj.scud.monitor;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/09/25 10:51
  * 监控的性能数据处理接口
  */

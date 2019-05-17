@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/08/25 11:40
  * 性能监视器，监视每个方法的性能
  */

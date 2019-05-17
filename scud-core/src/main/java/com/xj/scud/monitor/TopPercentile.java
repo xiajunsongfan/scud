@@ -1,7 +1,7 @@
 package com.xj.scud.monitor;
 
 /**
- * Author: baichuan - xiajun
+ * Author: xiajun
  * Date: 2017/09/25 14:08
  */
 public class TopPercentile {

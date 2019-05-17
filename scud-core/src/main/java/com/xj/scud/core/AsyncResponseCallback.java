@@ -1,8 +1,6 @@
 package com.xj.scud.core;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Author: xiajun
@@ -54,12 +52,12 @@ public class AsyncResponseCallback extends RpcFuture<RpcResult> {
     }
 
     @Override
-    public RpcResult get() throws InterruptedException, ExecutionException {
+    public RpcResult get() {
         return null;
     }
 
     @Override
-    public RpcResult get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public RpcResult get(long timeout, TimeUnit unit) {
         return null;
     }
 }

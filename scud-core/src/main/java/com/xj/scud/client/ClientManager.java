@@ -81,61 +81,48 @@ public class ClientManager<T> {
             if (!zkClient.exists(clientPath)) {
                 zkClient.create(clientPath, new byte[1]);
             }
-            zkClient.listenChildData(path, new Listener() {
-                @Override
-                public void listen(String path, Watcher.Event.EventType eventType, byte[] data) throws ZkClientException, SocketException {
-                    String[] pathArr = path.split("/");
-                    String host = pathArr[pathArr.length - 1];
-                    String[] ipPort = host.split(":");
-                    NodeInfo nodeInfo = new NodeInfo(ipPort[0], Integer.parseInt(ipPort[1]));
-                    boolean online = true;
-                    if (data != null && data.length > 1) {
-                        String msg = new String(data, Charset.forName("UTF-8"));
-                        Gson gson = new Gson();
-                        ServerNodeStatus status = gson.fromJson(msg, ServerNodeStatus.class);
-                        if (status.getStatus() == -1) {
-                            online = false;
-                        }
+            zkClient.listenChildData(path, (path1, eventType, data) -> {
+                String[] pathArr = path1.split("/");
+                String host = pathArr[pathArr.length - 1];
+                String[] ipPort = host.split(":");
+                NodeInfo nodeInfo = new NodeInfo(ipPort[0], Integer.parseInt(ipPort[1]));
+                boolean online = true;
+                if (data != null && data.length > 1) {
+                    String msg = new String(data, Charset.forName("UTF-8"));
+                    Gson gson = new Gson();
+                    ServerNodeStatus status = gson.fromJson(msg, ServerNodeStatus.class);
+                    if (status.getStatus() == -1) {
+                        online = false;
                     }
-                    if (eventType == Watcher.Event.EventType.NodeCreated) {
-                        LOGGER.info("Get server node {} online={}", nodeInfo.getPath(), online);
-                        if (online) {
-                            Channel ch = initChannel(nodeInfo.getIp(), nodeInfo.getPort());
+                }
+                if (eventType == Watcher.Event.EventType.NodeCreated) {
+                    LOGGER.info("Get server node {} online={}", nodeInfo.getPath(), online);
+                    if (online) {
+                        Channel ch = initChannel(nodeInfo.getIp(), nodeInfo.getPort());
+                        InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
+                        zkClient.create(clientPath + sock.getAddress() + ":" + sock.getPort(), new byte[1], true);
+                        route.addServerNode(nodeInfo, ch);
+                        LOGGER.info("Connection server {} success.", nodeInfo.getPath());
+                    }
+                } else if (eventType == Watcher.Event.EventType.NodeDeleted) {
+                    Channel ch = route.removeServerNode(nodeInfo.getPath());
+                    LOGGER.info("Delete server node :{}", nodeInfo.getPath());
+                    close(ch, clientPath, nodeInfo);
+                } else {//数据变化
+                    if (online) {
+                        LOGGER.info("Server node online {}", nodeInfo.getPath());
+                        Channel ch = route.getServer(nodeInfo.getPath());
+                        if (ch == null) {
+                            ch = initChannel(nodeInfo.getIp(), nodeInfo.getPort());
                             InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
                             zkClient.create(clientPath + sock.getAddress() + ":" + sock.getPort(), new byte[1], true);
                             route.addServerNode(nodeInfo, ch);
                             LOGGER.info("Connection server {} success.", nodeInfo.getPath());
                         }
-                    } else if (eventType == Watcher.Event.EventType.NodeDeleted) {
+                    } else {
+                        LOGGER.info("Server node offline {}", nodeInfo.getPath());
                         Channel ch = route.removeServerNode(nodeInfo.getPath());
-                        LOGGER.info("Delete server node :{}", nodeInfo.getPath());
-                        if (ch != null) {
-                            nettyClient.close(ch);
-                            InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
-                            zkClient.delete(clientPath + sock.getAddress() + ":" + sock.getPort());
-                            LOGGER.info("Close server {} connection.", nodeInfo.getPath());
-                        }
-                    } else {//数据变化
-                        if (online) {
-                            LOGGER.info("Server node online {}", nodeInfo.getPath());
-                            Channel ch = route.getServer(nodeInfo.getPath());
-                            if (ch == null) {
-                                ch = initChannel(nodeInfo.getIp(), nodeInfo.getPort());
-                                InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
-                                zkClient.create(clientPath + sock.getAddress() + ":" + sock.getPort(), new byte[1], true);
-                                route.addServerNode(nodeInfo, ch);
-                                LOGGER.info("Connection server {} success.", nodeInfo.getPath());
-                            }
-                        } else {
-                            LOGGER.info("Server node offline {}", nodeInfo.getPath());
-                            Channel ch = route.removeServerNode(nodeInfo.getPath());
-                            if (ch != null) {
-                                nettyClient.close(ch);
-                                InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
-                                zkClient.delete(clientPath + sock.getAddress() + ":" + sock.getPort());
-                                LOGGER.info("Close server {} connection.", nodeInfo.getPath());
-                            }
-                        }
+                        close(ch, clientPath, nodeInfo);
                     }
                 }
             });
@@ -149,6 +136,15 @@ public class ClientManager<T> {
                 NodeInfo nodeInfo = new NodeInfo(ip, port);
                 route.addServerNode(nodeInfo, ch);
             }
+        }
+    }
+
+    private void close(Channel ch, String clientPath, NodeInfo nodeInfo) {
+        if (ch != null) {
+            nettyClient.close(ch);
+            InetSocketAddress sock = (InetSocketAddress) ch.localAddress();
+            zkClient.delete(clientPath + sock.getAddress() + ":" + sock.getPort());
+            LOGGER.info("Close server {} connection.", nodeInfo.getPath());
         }
     }
 
