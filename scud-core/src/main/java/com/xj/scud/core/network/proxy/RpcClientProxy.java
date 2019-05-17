@@ -8,6 +8,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: xiajun
@@ -61,7 +62,10 @@ public class RpcClientProxy<T> implements MethodInterceptor {
             manager.asyncCallbackInvoke(serviceName, method, args, context.getRpcCallback());
         } else if (context.isFutureInvoke()) {
             RpcFuture<T> resultFuture = manager.asyncFutureInvoke(serviceName, method, args);
-            context.getFuture().copyFuture(resultFuture);
+            context.setFuture(resultFuture);
+        } else if (method.getReturnType() == CompletableFuture.class) {
+            RpcFuture<T> resultFuture = manager.asyncFutureInvoke(serviceName, method, args);
+            return (T) resultFuture;
         } else {
             t = (T) manager.invoke(serviceName, method, args);
         }

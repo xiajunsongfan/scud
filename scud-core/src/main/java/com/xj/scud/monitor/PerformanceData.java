@@ -1,5 +1,7 @@
 package com.xj.scud.monitor;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Author: xiajun
  * Date: 2017/08/25 11:41
@@ -12,9 +14,8 @@ public class PerformanceData {
         this.methodName = methodName;
     }
 
-    private long totalCostTime;//总耗时
-    private int size;//链表长度
-    private Node root = new Node(-1);//链表
+    private AtomicInteger amount = new AtomicInteger();//总调用量
+    private AtomicInteger[] container = new AtomicInteger[1537];//记录耗时
 
     /**
      * 添加调用时间到链表
@@ -22,175 +23,57 @@ public class PerformanceData {
      * @param costTime 方法耗时
      */
     public void add(int costTime) {
-        size++;
-        totalCostTime += costTime;
-        Node newNode = new Node(costTime);
-        if (root.costTime == -1) {
-            root = newNode;
+        amount.incrementAndGet();
+        Integer index = this.index(costTime);
+        if (container[index] == null) {
+            synchronized (container) {
+                if (container[index] == null) {
+                    AtomicInteger count = new AtomicInteger();
+                    container[index] = count;
+                }
+            }
+        }
+        container[index].incrementAndGet();
+    }
+
+    private Integer index(int costTime) {
+        int index;
+        if (costTime < 256) {
+            index = costTime;
+        } else if (costTime >= 16128) {
+            index = 1536;
+        } else if (costTime >= 7936) {
+            index = costTime / 32 + 956;
+        } else if (costTime >= 3840) {
+            index = costTime / 16 + 784;
+        } else if (costTime >= 1792) {
+            index = costTime / 8 + 544;
+        } else if (costTime >= 768) {
+            index = costTime / 4 + 320;
+        } else {//costTime >= 256
+            index = costTime / 2 + 128;
+        }
+        return index;
+    }
+
+    private int unindex(int index) {
+        int value;
+        if (index >= 1536) {
+            value = 16128;
+        } else if (index >= 1280) {
+            value = (index - 956) * 32 + 16;//误差0 - 31，加16取中间值误差-16 - 15
+        } else if (index >= 1024) {
+            value = (index - 784) * 16 + 8;
+        } else if (index >= 768) {
+            value = (index - 544) * 8 + 4;
+        } else if (index >= 512) {
+            value = (index - 320) * 4 + 2;
+        } else if (index >= 256) {
+            value = (index - 128) * 2 + 1;
         } else {
-            this.insertRBT(newNode);
+            value = index;
         }
-    }
-
-    /**
-     * 二叉树插入
-     *
-     * @param newNode
-     */
-    private synchronized void insert(Node newNode) {
-        Node head = root;
-        while (true) {
-            if (head.costTime > newNode.costTime) {
-                if (head.left == null) {
-                    head.left = newNode;
-                    break;
-                } else {
-                    head = head.left;
-                }
-            } else if (head.costTime < newNode.costTime) {
-                if (head.right == null) {
-                    head.right = newNode;
-                    break;
-                } else {
-                    head = head.right;
-                }
-            } else if (head.costTime == newNode.costTime) {
-                head.count = head.count + 1;
-                break;
-            }
-        }
-    }
-
-    /**
-     * 红黑树插入
-     *
-     * @param newNode
-     */
-    private synchronized void insertRBT(Node newNode) {
-        Node t = root;
-        Node parent;
-        int cmp;
-        do {
-            parent = t;
-            cmp = newNode.costTime - t.costTime;
-            if (cmp < 0) {
-                t = t.left;
-            } else if (cmp > 0) {
-                t = t.right;
-            } else {
-                t.count++;
-                return;
-            }
-        } while (t != null);
-        newNode.parent = parent;
-        if (cmp < 0) {
-            parent.left = newNode;
-        } else {
-            parent.right = newNode;
-        }
-        fixAfterInsertion(newNode);
-    }
-
-    private void fixAfterInsertion(Node x) {
-        x.color = RED;
-        while (x != null && x != root && x.parent.color == RED) {
-            if (parentOf(x) == leftOf(parentOf(parentOf(x)))) {
-                Node y = rightOf(parentOf(parentOf(x)));
-                if (colorOf(y) == RED) {
-                    setColor(parentOf(x), BLACK);
-                    setColor(y, BLACK);
-                    setColor(parentOf(parentOf(x)), RED);
-                    x = parentOf(parentOf(x));
-                } else {
-                    if (x == rightOf(parentOf(x))) {
-                        x = parentOf(x);
-                        rotateLeft(x);
-                    }
-                    setColor(parentOf(x), BLACK);
-                    setColor(parentOf(parentOf(x)), RED);
-                    rotateRight(parentOf(parentOf(x)));
-                }
-            } else {
-                Node y = leftOf(parentOf(parentOf(x)));
-                if (colorOf(y) == RED) {
-                    setColor(parentOf(x), BLACK);
-                    setColor(y, BLACK);
-                    setColor(parentOf(parentOf(x)), RED);
-                    x = parentOf(parentOf(x));
-                } else {
-                    if (x == leftOf(parentOf(x))) {
-                        x = parentOf(x);
-                        rotateRight(x);
-                    }
-                    setColor(parentOf(x), BLACK);
-                    setColor(parentOf(parentOf(x)), RED);
-                    rotateLeft(parentOf(parentOf(x)));
-                }
-            }
-        }
-        root.color = BLACK;
-    }
-
-    private static boolean colorOf(Node p) {
-        return (p == null ? BLACK : p.color);
-    }
-
-    private static Node parentOf(Node p) {
-        return (p == null ? null : p.parent);
-    }
-
-    private static void setColor(Node p, boolean c) {
-        if (p != null) {
-            p.color = c;
-        }
-    }
-
-    private static Node leftOf(Node p) {
-        return (p == null) ? null : p.left;
-    }
-
-    private static Node rightOf(Node p) {
-        return (p == null) ? null : p.right;
-    }
-
-    private void rotateLeft(Node p) {
-        if (p != null) {
-            Node r = p.right;
-            p.right = r.left;
-            if (r.left != null) {
-                r.left.parent = p;
-            }
-            r.parent = p.parent;
-            if (p.parent == null) {
-                root = r;
-            } else if (p.parent.left == p) {
-                p.parent.left = r;
-            } else {
-                p.parent.right = r;
-            }
-            r.left = p;
-            p.parent = r;
-        }
-    }
-
-    private void rotateRight(Node p) {
-        if (p != null) {
-            Node l = p.left;
-            p.left = l.right;
-            if (l.right != null) {
-                l.right.parent = p;
-            }
-            l.parent = p.parent;
-            if (p.parent == null) {
-                root = l;
-            } else if (p.parent.right == p) {
-                p.parent.right = l;
-            } else {
-                p.parent.left = l;
-            }
-            l.right = p;
-            p.parent = l;
-        }
+        return value;
     }
 
     /**
@@ -199,75 +82,50 @@ public class PerformanceData {
      * @return
      */
     public TopPercentile getTP() {
-        int tp50Index = this.size * 5;
+        int snapshotSize = this.amount.get();
+        int tp50Index = snapshotSize * 5;
         tp50Index = tp50Index % 10 == 0 ? tp50Index / 10 : tp50Index / 10 + 1;
-        int tp90Index = this.size * 9;
+        int tp90Index = snapshotSize * 9;
         tp90Index = tp90Index % 10 == 0 ? tp90Index / 10 : tp90Index / 10 + 1;
-        int tp99Index = this.size * 99;
+        int tp99Index = snapshotSize * 99;
         tp99Index = tp99Index % 100 == 0 ? tp99Index / 100 : tp99Index / 100 + 1;
-        int tp999Index = this.size * 999;
+        int tp999Index = snapshotSize * 999;
         tp999Index = tp999Index % 1000 == 0 ? tp999Index / 1000 : tp999Index / 1000 + 1;
         int tp50 = -1, tp90 = -1, tp99 = -1, tp999 = -1, min = -1, max = -1;
-
-        Node[] stack = new Node[32];
-        Node node = root;
-        int i = -1;
         int count = 0;
-        while (node != null || i >= 0) {
-            while (node != null) {
-                stack[++i] = node;
-                node = node.left;
+        for (int i = 0; i < container.length; i++) {
+            AtomicInteger c = container[i];
+            if (c == null) {
+                continue;
             }
-            if (i >= 0) {
-                node = stack[i--];
-                count += node.count;
-                if (min == -1) {
-                    min = node.costTime;
-                }
-                if (tp50 == -1 && count >= tp50Index) {
-                    tp50 = node.costTime;
-                }
-                if (tp90 == -1 && count >= tp90Index) {
-                    tp90 = node.costTime;
-                }
-                if (tp99 == -1 && count >= tp99Index) {
-                    tp99 = node.costTime;
-                }
-                if (tp999 == -1 && count >= tp999Index) {
-                    tp999 = node.costTime;
-                }
-                max = node.costTime;
-                node = node.right;
+            count += c.get();
+            if (min < 0) {
+                min = unindex(i);
+            }
+            if (tp50 < 0 && count >= tp50Index) {
+                tp50 = unindex(i);
+            }
+            if (tp90 < 0 && count >= tp90Index) {
+                tp90 = unindex(i);
+            }
+            if (tp99 < 0 && count >= tp99Index) {
+                tp99 = unindex(i);
+            }
+            if (tp999 < 0 && count >= tp999Index) {
+                tp999 = unindex(i);
+            }
+            if (count >= amount.get()) {
+                max = unindex(i);
             }
         }
-        return new TopPercentile(tp50, tp90, tp99, tp999, size, min, max);
-    }
-
-    private static final boolean RED = false;
-    private static final boolean BLACK = true;
-
-    class Node {
-        private Node left;
-        private Node right;
-        private int costTime;
-        private int count = 1;
-        private Node parent;
-        boolean color = BLACK;
-
-        public Node(int costTime) {
-            this.costTime = costTime;
-        }
+        return new TopPercentile(tp50, tp90, tp99, tp999, snapshotSize, min, max);
     }
 
     public String getMethodName() {
         return methodName;
     }
 
-    public long getTotalCostTime() {
-        return totalCostTime;
-    }
-
     public int getSize() {
-        return size;
+        return amount.get();
     }
 }

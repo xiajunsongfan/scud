@@ -32,11 +32,6 @@ public class AsyncResponseCallback extends RpcFuture<RpcResult> {
     }
 
     @Override
-    public void copyFuture(RpcFuture<RpcResult> future) {
-
-    }
-
-    @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return false;
     }

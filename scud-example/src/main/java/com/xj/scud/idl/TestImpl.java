@@ -1,10 +1,12 @@
 package com.xj.scud.idl;
 
+import com.xj.scud.annotation.Async;
 import com.xj.scud.annotation.Scud;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: xiajun
@@ -17,7 +19,7 @@ public class TestImpl implements Test {
     public String test2() {
         return "hello test";
     }
-
+    @Async
     public User test(String s) {
         User u = new User();
         u.setAge(12);
@@ -26,7 +28,7 @@ public class TestImpl implements Test {
         likes.add("美食");
         u.setLikes(likes);
         try {
-            Thread.sleep(random.nextInt(100));
+            Thread.sleep(random.nextInt(1500));
         } catch (InterruptedException e) {
 
         }
@@ -36,5 +38,10 @@ public class TestImpl implements Test {
 
     public void test(String s, int i) {
         System.out.println(s + "------" + i);
+    }
+
+    @Override
+    public CompletableFuture<User> testAsync(String s) {
+        return CompletableFuture.supplyAsync(() -> this.test(s));
     }
 }

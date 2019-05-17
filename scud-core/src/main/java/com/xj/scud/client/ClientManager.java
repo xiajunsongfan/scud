@@ -173,25 +173,16 @@ public class ClientManager<T> {
     public T invoke(String serviceName, Method method, Object[] args) throws Exception {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
-        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
+        RpcFuture<T> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
-        RpcResult result = null;
+        T result;
         try {
             result = rpcFuture.get(config.getTimeout(), TimeUnit.MILLISECONDS);
         } finally {
-            if (result == null) {//客户端超时
-                MessageManager.remove(protocol.getSequence());
-            }
+            MessageManager.remove(protocol.getSequence());
         }
-        if (result != null) {
-            Throwable exception = result.getException();
-            if (exception != null) {//服务端发生异常
-                throw new Exception("Service provider exception.", exception);
-            }
-            return (T) result.getValue();
-        }
-        return null;
+        return result;
     }
 
     /**
@@ -205,10 +196,10 @@ public class ClientManager<T> {
     public RpcFuture<T> asyncFutureInvoke(String serviceName, Method method, Object[] args) throws Exception {
         int seq = createdPackageId();
         NetworkProtocol protocol = this.processer.buildRequestProtocol(serviceName, this.config.getVersion(), method, args, seq);
-        RpcFuture<RpcResult> rpcFuture = new ResponseFuture<>(config.getTimeout());
+        RpcFuture<T> rpcFuture = new ResponseFuture<>(config.getTimeout());
         MessageManager.setSeq(seq, rpcFuture);
         this.invoker.invoke(this.getChannel(serviceName), protocol, seq);
-        return new AsyncResponseFuture<>(rpcFuture, seq);
+        return rpcFuture;
     }
 
     /**

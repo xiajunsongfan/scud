@@ -19,7 +19,7 @@ public class MessageManager {
      *
      * @param seq 等待序号
      */
-    public static RpcFuture setSeq(int seq, RpcFuture<RpcResult> future) {
+    public static RpcFuture setSeq(int seq, RpcFuture future) {
         msgManager.put(seq, future);
         return future;
     }
@@ -56,7 +56,7 @@ public class MessageManager {
                     RpcFuture rpcFuture = it.next().getValue();
                     if (rpcFuture.getInvokerTimeout() > 0 && (System.currentTimeMillis() - rpcFuture.sendTime - 1000) > rpcFuture.getInvokerTimeout()) {
                         RpcResult response = new RpcResult();
-                        response.setException(new TimeoutException("time out."));
+                        response.setException(new TimeoutException("Timeout,Timer scan"));
                         rpcFuture.responseReceived(response);
                         it.remove();
                     }

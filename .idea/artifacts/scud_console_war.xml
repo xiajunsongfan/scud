@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="scud.console:war">
-    <output-path>$PROJECT_DIR$/scud-console/target</output-path>
-    <root id="archive" name="scud.console-1.0.0-SNAPSHOT.war">
-      <element id="artifact" artifact-name="scud.console:war exploded" />
-    </root>
-  </artifact>
-</component>
