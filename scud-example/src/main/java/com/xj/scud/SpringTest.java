@@ -19,7 +19,7 @@ public class SpringTest {
 
     public static void main(String[] args) throws InterruptedException {
         init();
-        Test t = (Test) context.getBean("client");
-        System.out.println(t.test("34556"));
+        //Test t = (Test) context.getBean("client");
+        //System.out.println(t.test("34556"));
     }
 }

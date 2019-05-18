@@ -19,12 +19,12 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
      Provider<Test> provider = new Provider<>(Test.class, new TestImpl(), "1.0.1");
      ScudServer server = new ScudServer(conf, provider);
      server.start();
-
+     
     /** client**/
     ClientConfig<Test> conf = new ClientConfig();
     conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
     Test t = ScudClientFactory.getServiceConsumer(conf);
-
+    
     /** 同步阻塞模式 **/
     long st = System.currentTimeMillis();
     String u = t.test();
@@ -32,7 +32,17 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
     User user = t.test("test");
     System.out.println(user.toString());
     System.out.println((System.currentTimeMillis() - st) + "ms ");
-
+    
+    /** 推荐的异步方式 **/
+    //服务端：可以自己实现也可以在 public User test(String s);上打@Async注解自动生成
+     public CompletableFuture<User> testAsync(String s) {
+            return CompletableFuture.supplyAsync(() -> this.test(s));
+        }
+    //客户端异步
+    CompletableFuture<User> future = t.testAsync("CompletableFuture-test");
+    future.thenAccept(user -> System.out.println(user));
+    
+    //以下是客户端异步其它调用方式
     /** 异步Future模式 **/
     Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
         @Override

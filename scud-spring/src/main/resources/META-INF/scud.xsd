@@ -25,9 +25,9 @@
         <xsd:attribute name="interface" type="xsd:token" use="required">
             <xsd:annotation>
                 <xsd:appinfo>
-                    <tool:annotation>
+                    <tool:com.xj.scud.annotation>
                         <tool:expected-type type="java.lang.Class"/>
-                    </tool:annotation>
+                    </tool:com.xj.scud.annotation>
                 </xsd:appinfo>
             </xsd:annotation>
         </xsd:attribute>

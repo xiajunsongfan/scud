@@ -1,4 +1,4 @@
-package com.xj.scud;
+package com.xj;
 
 import com.xj.scud.core.RpcResult;
 import com.xj.scud.core.network.ProtobufSerializable;

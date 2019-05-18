@@ -14,5 +14,5 @@
         </scud:providers>
     </scud:server>
 
-    <scud:client id="client" host="127.0.0.1:6155" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.1"/>
+    <scud:client id="client" host="127.0.0.1:6157" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.1"/>
 </beans>

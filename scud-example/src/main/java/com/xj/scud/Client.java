@@ -31,8 +31,8 @@ public class Client {
 
         //* 同步阻塞模式 *
         Long stime = System.currentTimeMillis();
-        CompletableFuture<User> future = t.testAsync("CompletableFuture-test");
-        future.thenAccept(user -> System.out.println("CompletableFuture: " + user + " " + (System.currentTimeMillis() - stime)));
+        //CompletableFuture<User> future = t.testAsync("CompletableFuture-test");
+        //future.thenAccept(user -> System.out.println("CompletableFuture: " + user + " " + (System.currentTimeMillis() - stime)));
 
         //* 异步Future模式 *
         Future<User> f = RpcContext.invokeWithFuture(() -> t.test("async-test"));

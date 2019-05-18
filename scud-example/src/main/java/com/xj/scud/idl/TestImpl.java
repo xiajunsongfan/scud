@@ -2,6 +2,7 @@ package com.xj.scud.idl;
 
 import com.xj.scud.annotation.Async;
 import com.xj.scud.annotation.Scud;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
  * Author: xiajun
  * Date: 2017/01/03 14:45
  */
-@Scud(version = "1.0.0")
+@Scud(version = "1.0.1")
 public class TestImpl implements Test {
     private Random random = new Random();
 
@@ -40,8 +41,7 @@ public class TestImpl implements Test {
         System.out.println(s + "------" + i);
     }
 
-    @Override
-    public CompletableFuture<User> testAsync(String s) {
+    public CompletableFuture<User> testAsync2(String s) {
         return CompletableFuture.supplyAsync(() -> this.test(s));
     }
 }

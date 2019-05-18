@@ -30,7 +30,7 @@ local.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
-# Java annotation processor (APT)
+# Java com.xj.scud.annotation processor (APT)
 .factorypath
 
 # PDT-specific

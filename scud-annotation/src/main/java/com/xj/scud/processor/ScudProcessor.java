@@ -25,7 +25,7 @@ import java.util.Set;
 //@AutoService(Processor.class)
 @SupportedAnnotationTypes({"com.xj.scud.annotation.*"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class ScudAsyncProcessor extends AbstractProcessor {
+public class ScudProcessor extends AbstractProcessor {
 
     /**
      * 语法树
@@ -60,10 +60,13 @@ public class ScudAsyncProcessor extends AbstractProcessor {
         messager.printMessage(Diagnostic.Kind.WARNING, "扫描Scud注解的类");
         if (!roundEnv.processingOver()) {
             for (Element element : elementsAnnotatedWith) {
-                messager.printMessage(Diagnostic.Kind.WARNING, "开始处理 class name [" + element.getSimpleName().toString()+"]");
-                if (element.getKind() == ElementKind.CLASS && !"".equals(element.getSimpleName().toString())) {
+                messager.printMessage(Diagnostic.Kind.WARNING, "开始处理 class name [" + element.getSimpleName().toString() + "]");
+                if (element.getKind() == ElementKind.CLASS) {
                     JCTree tree = (JCTree) trees.getTree(element);
-                    tree.accept(new ScudAsyncTreeTranslator(treeMaker, names,messager));
+                    tree.accept(new ScudAsyncTranslator(treeMaker, names, messager));
+                } else if (element.getKind() == ElementKind.INTERFACE) {
+                    JCTree tree = (JCTree) trees.getTree(element);
+                    tree.accept(new ScudInterfaceTranslator(treeMaker, names, messager));
                 }
             }
         }
