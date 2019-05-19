@@ -31,6 +31,7 @@ public class Client {
 
         //* 同步阻塞模式 *
         Long stime = System.currentTimeMillis();
+        System.out.println(t.test("sync"));
         //CompletableFuture<User> future = t.testAsync("CompletableFuture-test");
         //future.thenAccept(user -> System.out.println("CompletableFuture: " + user + " " + (System.currentTimeMillis() - stime)));
 

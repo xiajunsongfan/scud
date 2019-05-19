@@ -127,17 +127,17 @@ public class TopPercentile {
 
     @Override
     public String toString() {
-        return "count=" + count +
+        return "monitor{" +
+                "service=" + serviceName + "." + method + "()" +
+                ", version=" + version +
+                ", time=" + time +
+                ", count=" + count +
                 ", tp50=" + tp50 +
                 ", tp90=" + tp90 +
                 ", tp99=" + tp99 +
                 ", tp999=" + tp999 +
                 ", min=" + min +
                 ", max=" + max +
-                ", appName='" + appName + '\'' +
-                ", serviceName='" + serviceName + '\'' +
-                ", method='" + method + '\'' +
-                ", version='" + version + '\'' +
-                ", time=" + time;
+                '}';
     }
 }
