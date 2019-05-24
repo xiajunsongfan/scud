@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
  * Author: baichuan - xiajun
  * Date: 2017/01/03 14:55
  */
-@Scud
 public interface Test {
     String test2();
 

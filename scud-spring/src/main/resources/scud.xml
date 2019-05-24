@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:scud="http://www.xj.com/schema/scud"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.xj.com/schema/scud http://www.xj.com/schema/scud/scud.xsd">
-
-    <bean id="testService" class="com.xj.scud.commons.Config"/>
-    <scud:server>
-        <scud:providers>
-            <scud:provider interface="com.xj.scud.idl.Test" ref="testService" version="1.0.1"/>
-        </scud:providers>
-    </scud:server>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 </beans>
