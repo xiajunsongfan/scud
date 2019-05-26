@@ -16,18 +16,11 @@ import java.lang.annotation.*;
 public @interface Client {
 
     /**
-     * 字段名
-     *
-     * @return
-     */
-    String name() default "";
-
-    /**
      * 服务版本号
      *
      * @return
      */
-    String version() default "";
+    String version() default "1.0";
 
     /**
      * 单机时使用ip:port

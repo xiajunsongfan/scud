@@ -107,11 +107,11 @@ public class ClientBean<T> implements FactoryBean, InitializingBean {
     private RouteEnum determineRoute() {
         if (null == route)
             return null;
-        if ("random".equals(type)) {
+        if ("random".equals(route)) {
             return RouteEnum.RANDOM;
-        } else if ("weight".equals(type)) {
+        } else if ("weight".equals(route)) {
             return RouteEnum.WEIGHT;
-        } else if ("rotation".equals(type)) {
+        } else if ("rotation".equals(route)) {
             return RouteEnum.ROTATION;
         }
         return null;

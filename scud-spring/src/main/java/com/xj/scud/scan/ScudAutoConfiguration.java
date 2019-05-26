@@ -21,4 +21,8 @@ public class ScudAutoConfiguration {
         return new ScudServiceScanner();
     }
 
+    @Bean
+    public ClientAnnotationProcessor clientAnnotationProcessor() {
+        return new ClientAnnotationProcessor();
+    }
 }

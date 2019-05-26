@@ -14,7 +14,5 @@ public class ScudServiceScanner implements ApplicationListener<ContextRefreshedE
         ApplicationContext context = applicationContextEvent.getApplicationContext();
         ServiceAnnotationProcessor serviceAnnotationProcessor = new ServiceAnnotationProcessor();
         serviceAnnotationProcessor.processor(context);
-        ClientAnnotationProcessor clientAnnotationProcessor = new ClientAnnotationProcessor();
-        clientAnnotationProcessor.processor(context);
     }
 }
