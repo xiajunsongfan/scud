@@ -16,6 +16,7 @@ import java.util.concurrent.Future;
 /**
  * Author: xiajun
  * Date: 2017/01/04 12:05
+ * 非注解客户端
  */
 public class Client {
     public static void main(String[] args) throws Exception {

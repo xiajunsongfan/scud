@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
  * @author: xiajun
  * @date: 2019/5/25 18:42
  * @since 1.0.0
+ * spring注解客户端
  */
 @Component
 public class SpringAnnotationScudClient {

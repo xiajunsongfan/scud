@@ -17,14 +17,14 @@ import java.util.concurrent.CompletableFuture;
 public class TestImpl implements Test {
     private Random random = new Random();
 
-    public String test2() {
+    public String test() {
         return "hello test";
     }
     @Async
-    public User test(String s) {
+    public User test(String name) {
         User u = new User();
         u.setAge(12);
-        u.setName(s);
+        u.setName(name);
         List<String> likes = new ArrayList<>();
         likes.add("美食");
         u.setLikes(likes);
@@ -35,13 +35,5 @@ public class TestImpl implements Test {
         }
         System.out.println(u.toString());
         return u;
-    }
-
-    public void test(String s, int i) {
-        System.out.println(s + "------" + i);
-    }
-
-    public CompletableFuture<User> testAsync2(String s) {
-        return CompletableFuture.supplyAsync(() -> this.test(s));
     }
 }

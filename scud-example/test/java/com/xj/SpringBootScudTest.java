@@ -1,7 +1,7 @@
 package com.xj;
 
 import com.xj.scud.SpringAnnotationScudClient;
-import com.xj.scud.SpringAnnotationTest;
+import com.xj.scud.SpringAnnotationScudServer;
 import com.xj.scud.idl.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  * @since 1.0.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = SpringAnnotationTest.class)
+@SpringBootTest(classes = SpringAnnotationScudServer.class)
 @Component
 public class SpringBootScudTest {
     @Resource

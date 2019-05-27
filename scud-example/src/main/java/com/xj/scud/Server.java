@@ -8,6 +8,7 @@ import com.xj.scud.server.ScudServer;
 /**
  * Author: xiajun
  * Date: 2017/01/04 12:08
+ * 非注解服务端启动类
  */
 public class Server {
     public static void main(String[] args) {

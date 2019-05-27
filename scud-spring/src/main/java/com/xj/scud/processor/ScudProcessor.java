@@ -64,7 +64,10 @@ public class ScudProcessor extends AbstractProcessor {
                 if (element.getKind() == ElementKind.CLASS) {
                     JCTree tree = (JCTree) trees.getTree(element);
                     tree.accept(new ScudAsyncTranslator(treeMaker, names, messager));
-                } else if (element.getKind() == ElementKind.INTERFACE) {
+                }
+            }
+            for (Element element : roundEnv.getRootElements()) {
+                if (element.getKind() == ElementKind.INTERFACE) {
                     JCTree tree = (JCTree) trees.getTree(element);
                     tree.accept(new ScudInterfaceTranslator(treeMaker, names, messager));
                 }
