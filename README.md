@@ -1,8 +1,6 @@
 ## scud rpc 项目
----
 ### 项目介绍：
 scud 基于netty4开发的一个的RPC服务（集群和单机模式）
-
 
 ### 使用方式：
 **1.添加依赖**
@@ -19,6 +17,32 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
         <groupId>com.xj.rpc</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </dependency>
+```
+* 1.1 项目类路径添加scud.properties配置
+```properties
+    ####服务发布者配置项#######
+    #服务使用的IP地址
+    provider.ip=0.0.0.0
+    #服务使用的端口
+    provider.port=6157
+    #工作线程数
+    work.core.pool.size=8
+    #netty work线程数
+    netty.work.poole.size=2
+    #连接超时
+    connect.timeout=1000
+    #方法性能监控
+    method.performance.monitor=false
+    #监控的性能数据处理方式，默认处理器为直接打印到log文件,如果开启了console默认会将监控数据发到console
+    #monitor.handler=com.xj.scud.monitor.MonitorHandlerImpl
+
+    ######公共配置########
+    #服务工程的名字，不同工程必须使用不同名字
+    aap.name=scud-test
+    #zookeeper地址
+    zk.host=192.168.50.166:2181
+    #是否使用zookeeper，true为使用
+    use.zk=false
 ```
 **2.服务端实现**
 * 2.1 在项目类路径添加 scud.properties配置
@@ -92,7 +116,7 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
 ```
 **4.结合spring**
 
-_spring两种使用方式  非注解使用_
+_spring两种使用方式,xml和注解_
 * 4.1 xml方式
 ```xml
     <?xml version="1.0" encoding="UTF-8"?>
