@@ -5,45 +5,64 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
 
 
 ### 使用方式：
-```java
-	<dependency>
-		<artifactId>scud-core</artifactId>
+**1.添加依赖**
+```xml
+    <dependency>
+        <artifactId>scud-core</artifactId>
         <groupId>com.xj.rpc</groupId>
         <version>1.0.0-SNAPSHOT</version>
-	</dependency>
+    </dependency>
+	
+    <!--使用spring或注解方式，添加如下依赖-->
+    <dependency>
+        <artifactId>scud-spring-boot-starter</artifactId>
+        <groupId>com.xj.rpc</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
 ```
-
+**2.服务端实现**
+* 2.1 在项目类路径添加 scud.properties配置
+* 2.2 java api方式
 ```java
-    在项目类路径添加 scud.properties配置
-    /** server 端 **/
      Provider<Test> provider = new Provider<>(Test.class, new TestImpl(), "1.0.1");
      ScudServer server = new ScudServer(conf, provider);
      server.start();
-     
-    /** client**/
+ ```
+* 2.3 注解方式
+```java
+    //可以自己实现异步方法，也可以在public User test(String s);同步方法上打@Async注解自动生成
+     public CompletableFuture<User> testAsync(String s) {
+            return CompletableFuture.supplyAsync(() -> this.test(s));
+     }
+     @Async
+     public User test(String s){
+         //...
+         return null;
+     }
+```
+**3.客户端实现**     
+* 3.1 客户端配置
+```java
     ClientConfig<Test> conf = new ClientConfig();
     conf.setHost("127.0.0.1:7890;127.0.0.1:7891").setRoute(RouteEnum.RANDOM).setTimeout(2000).setInterfaze(Test.class).setVersion("1.0.1").setWorkThreadSize(1).setType(SerializableEnum.PROTOBUF);
     Test t = ScudClientFactory.getServiceConsumer(conf);
-    
-    /** 同步阻塞模式 **/
+```
+* 3.2 同步阻塞模式
+```java
     long st = System.currentTimeMillis();
     String u = t.test();
     System.out.println(u.toString());
     User user = t.test("test");
     System.out.println(user.toString());
     System.out.println((System.currentTimeMillis() - st) + "ms ");
-    
-    /** 推荐的异步方式 **/
-    //服务端：可以自己实现也可以在 public User test(String s);上打@Async注解自动生成
-     public CompletableFuture<User> testAsync(String s) {
-            return CompletableFuture.supplyAsync(() -> this.test(s));
-        }
-    //客户端异步
+```
+* 3.3 客户端异步，返回future对象
+```java
+    /** 服务端已经实现了异步方法，客户端直接调用 **/
     CompletableFuture<User> future = t.testAsync("CompletableFuture-test");
     future.thenAccept(user -> System.out.println(user));
     
-    //以下是客户端异步其它调用方式
-    /** 异步Future模式 **/
+    /** 服务端同步方法，客户端使用Future模式 **/
     Future<User> f = RpcContext.invokeWithFuture(new AsyncPrepare() {
         @Override
         public void prepare() {
@@ -51,8 +70,9 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
         }
     });
     System.out.println(f.get());
-
-    /** 异步Callback模式 **/
+```
+* 3.4 客户端异步，异步回调模式
+```java
     RpcContext.invokeWithCallback(new AsyncPrepare() {
        @Override
         public void prepare() {
@@ -69,8 +89,12 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
             error.printStackTrace();
         }
     });
+```
+**4.结合spring**
 
-    /** spring两种使用方式  非注解使用**/
+_spring两种使用方式  非注解使用_
+* 4.1 xml方式
+```xml
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -89,28 +113,19 @@ scud 基于netty4开发的一个的RPC服务（集群和单机模式）
 
         <scud:client id="client" host="127.0.0.1:7890" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.1"/>
     </beans>
-
-    /** 注解使用**/
-    <?xml version="1.0" encoding="UTF-8"?>
-    <beans xmlns="http://www.springframework.org/schema/beans"
-           xmlns:scud="http://www.xj.com/schema/scud"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-            http://www.xj.com/schema/scud http://www.xj.com/schema/scud/scud.xsd">
-
-        <context:component-scan base-package="com.xj.scud.idl"/> <!--扫描注解类所在包路径 -->
-
-        <bean id="serviceScanner" class="com.xj.scud.scan.ScudServiceScanner"/>
-        <scud:client id="client" host="127.0.0.1:6155" interface="com.xj.scud.idl.Test" connentTimeout="4000" timeout="2000" lazy-init="true" version="1.0.0"/>
-    </beans>
-    实现类需要打上注解
+```
+* 4.2 注解使用
+```java
+    /** 1. 添加spring注解扫描路径 **/
+    @SpringBootApplication(scanBasePackages = "com.xj.xxx")
+    /** 2. 实现类需要打上注解 **/
     @Scud(version = "1.0.0")
     public class TestImpl implements Test {}
-
-    例子可以参考scud-example
-
+    /** 3. 客户端对象打上@Client注解 **/
+    @Client(version = "1.0.1", host = "127.0.0.1:6157", lazy = true)
+    private Test clent;
 ```
+例子可以参考scud-example
 ### 集群模式
 ```
     1. 集群使用zookeeper进行管理，zookeeper客户端使用了自己封装的 [zkclient](https://github.com/xiajunsongfan/zkclient)

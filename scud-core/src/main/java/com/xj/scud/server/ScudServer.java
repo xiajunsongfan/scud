@@ -2,6 +2,7 @@ package com.xj.scud.server;
 
 import com.xj.scud.commons.Config;
 import com.xj.scud.commons.NetworkUtil;
+import com.xj.scud.core.RpcContext;
 import com.xj.scud.core.ServiceMapper;
 import com.xj.scud.core.network.netty.NettyServer;
 import com.xj.scud.monitor.MonitorReport;
@@ -40,14 +41,11 @@ public class ScudServer {
                 final ThreadPoolExecutor executor = new ThreadPoolExecutor(2, config.getCorePoolSize(), 30, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new DefaultThreadFactory("scud-server-work", true), new ThreadPoolExecutor.CallerRunsPolicy());
                 ServiceMapper.init(this.providers);
                 ServerManager manager = new ServerManager(config, executor);
+                RpcContext.setServerExecutor(executor);
                 NettyServer.start(this.config, manager);
                 ServiceMapper.createZkNode(this.providers, this.zkClient, this.config.getPort());
-                Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {//系统停止时服务关闭
-                    @Override
-                    public void run() {
-                        stop(executor);
-                    }
-                }));
+                //系统停止时服务关闭
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> stop(executor)));
                 MonitorReport.init(Config.getValue("monitor.handler"));
                 LOGGER.info("Scud server start config info:{}", config.toString());
             } else {

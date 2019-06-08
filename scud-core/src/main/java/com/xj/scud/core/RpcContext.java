@@ -1,6 +1,7 @@
 package com.xj.scud.core;
 
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Author: xiajun
@@ -11,13 +12,9 @@ public class RpcContext {
     private boolean isCallbackInvoke = false;
     private RpcCallback rpcCallback;
     private RpcFuture future;
+    private static ThreadPoolExecutor serverExecutor;
 
-    private static final ThreadLocal<RpcContext> LOCAL = new ThreadLocal<RpcContext>() {
-        @Override
-        protected RpcContext initialValue() {
-            return new RpcContext();
-        }
-    };
+    private static final ThreadLocal<RpcContext> LOCAL = ThreadLocal.withInitial(() -> new RpcContext());
 
     public static RpcContext getContext() {
         return LOCAL.get();
@@ -76,5 +73,13 @@ public class RpcContext {
 
     public void setFuture(RpcFuture future) {
         this.future = future;
+    }
+
+    public static ThreadPoolExecutor getServerExecutor() {
+        return serverExecutor;
+    }
+
+    public static void setServerExecutor(ThreadPoolExecutor serverExecutor) {
+        RpcContext.serverExecutor = serverExecutor;
     }
 }

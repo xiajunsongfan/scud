@@ -78,9 +78,15 @@ public class ScudAsyncTranslator extends ScudTranslator {
             } else {
                 lambda = treeMaker.Lambda(List.nil(), ((JCExpressionStatement) tryBody).expr);
             }
+
+            JCExpression exe = treeMaker.Apply(
+                    List.nil(),//参数类型
+                    memberAccess("com.xj.scud.core.RpcContext.getServerExecutor"),
+                    List.nil());
+
             JCReturn jcReturn = treeMaker.Return(
                     treeMaker.Exec(
-                            treeMaker.Apply(List.nil(), memberAccess(futureMethod), List.of(lambda))
+                            treeMaker.Apply(List.nil(), memberAccess(futureMethod), List.of(lambda, exe))
                     ).expr);
             JCBlock methodBody = treeMaker.Block(0, List.of(jcReturn));
             return treeMaker.MethodDef(

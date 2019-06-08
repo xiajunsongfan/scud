@@ -2,12 +2,10 @@ package com.xj.scud.idl;
 
 import com.xj.scud.annotation.Async;
 import com.xj.scud.annotation.Scud;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: xiajun

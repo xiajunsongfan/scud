@@ -47,7 +47,7 @@ public class Config {
             is = urls.get(0).openStream();
             prop.load(is);
             METHOD_MONITOR = "true".equalsIgnoreCase(prop.getProperty("method.performance.monitor", "false"));
-            APP_NAME = prop.getProperty("aap.name");
+            APP_NAME = prop.getProperty("app.name");
             LOGGER.info("Method performance monitor status {}.", METHOD_MONITOR ? "on" : "off");
         } catch (Exception var4) {
             if (is != null) {
