@@ -142,7 +142,7 @@ _spring两种使用方式,xml和注解_
 ```java
     /** 1. 添加spring注解扫描路径 **/
     @SpringBootApplication(scanBasePackages = "com.xj.xxx")
-    /** 2. 实现类需要打上注解 **/
+    /** 2. 服务端实现类需要打上Scud注解 **/
     @Scud(version = "1.0.0")
     public class TestImpl implements Test {}
     /** 3. 客户端对象打上@Client注解 **/
